@@ -1,4 +1,4 @@
-# AK
+# Thus Spake A.K.
 
 
 Of the myriad aspects of programming, numerical computing is perhaps the one that most programmers are least familiar with, which is a pity since it is, in my opinion, one of the most interesting. In an attempt to increase understanding of the subject within the programming community I've decided to implement, and blog about implementing, a rudimentary numerical library.
