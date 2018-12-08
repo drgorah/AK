@@ -43,7 +43,6 @@
     ak.partialSort(a, k, compare);
     a.length = k;
     for(col=0;col<k;++col) a[col] = a[col][0];
-    distances[row] = a;
    }
    return distances;
   };
