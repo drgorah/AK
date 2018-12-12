@@ -37,7 +37,7 @@
   ak.knnClasses = function(candidates, arg1, arg2, arg3, arg4) {
    var t0 = ak.type(candidates);
    var sum = 0;
-   var t1, data, clusters, memberships, weights, neighbours, classes, i;
+   var t1, data, clusters, memberships, weights, wi, neighbours, classes, i;
 
    if(t0!==ak.ARRAY_T && t0!==ak.CLUSTER_DATA_T) throw new Error('invalid candidates in ak.knnClasses');
 
@@ -59,8 +59,9 @@
    if(ak.nativeType(arg2)===ak.ARRAY_T) {
     weights = arg2;
     for(i=0;i<weights.length;++i) {
-     if(weights[i]<0) throw new Error('negative weight in ak.knnClasses');
-     sum += weights[i];
+     wi = weights[i];
+     if(ak.nativeType(wi)!==ak.NUMBER_T || wi<0 || !isFinite(wi)) throw new Error('invalid weight in ak.knnClasses');
+     sum += wi;
     }
     if(!isFinite(sum)) throw new Error('non-finite weight in ak.knnClasses');
     arg2 = weights.length;
