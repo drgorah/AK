@@ -23,6 +23,7 @@
  all.push('Cluster/NearestNeighbours.js');
  all.push('Cluster/RawClustering.js');
  all.push('Cluster/RawClusterings.js');
+ all.push('Cluster/SharedNeighboursClustering.js');
  all.push('Cluster/SlinkClustering.js');
  ak.using(all);
 })();
