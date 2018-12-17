@@ -13,18 +13,24 @@
   if(ak.sharedNeighboursClustering) return;
 
   function mutual(neighbours, i, j) {
-   return neighbours[i].indexOf(j)>=0 && neighbours[j].indexOf(i)>=0;
+   return ak.binarySearch(neighbours[i], j, ak.numberCompare) && ak.binarySearch(neighbours[j], i, ak.numberCompare);
   }
 
-  function shared(neighbours, i, j) {
+  function shared(neighbours, t, i, j) {
    var ni = neighbours[i];
    var nj = neighbours[j];
    var n = ni.length;
-   var t = 0;
-   var i;
+   var i = 0;
+   var j = 0;
+   var c;
 
-   for(i=0;i<n;++i) if(nj.indexOf(ni[i])>=0) ++t;
-   return t;
+   while(i<n && j<n && t>0) {
+    c = ni[i]-nj[j];
+    if(c<=0)  ++i;
+    if(c>=0)  ++j;
+    if(c===0) --t;
+   }
+   return t===0;
   }
 
   function replace(memberships, j, i) {
@@ -46,8 +52,9 @@
 
    for(i=0;i<n;++i) {
     memberships[i] = i;
+    neighbours[i].sort(ak.numberCompare);
     for(j=0;j<i;++j) {
-     if(mutual(neighbours, i, j) && shared(neighbours, i, j)>=t) replace(memberships, j, i);
+     if(mutual(neighbours, i, j) && shared(neighbours, t, i, j)) replace(memberships, memberships[j], i);
     }
    }
 
@@ -55,5 +62,5 @@
   };
  };
 
- ak.using(['Cluster/NearestNeighbours.js', 'Cluster/Clustering.js'], define);
+ ak.using(['Cluster/NearestNeighbours.js', 'Cluster/Clustering.js', 'Algorithm/BinarySearch.js'], define);
 })();
