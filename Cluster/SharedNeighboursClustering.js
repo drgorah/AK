@@ -41,11 +41,11 @@
   ak.sharedNeighboursClustering = function(data, k, t, f) {
    var n, neighbours, memberships, i, j;
 
-   if(ak.nativeType(data)!==ak.ARRAY_T) throw new Error('invalid data in ak.sharedNeighbourClustering');
+   if(ak.nativeType(data)!==ak.ARRAY_T) throw new Error('invalid data in ak.sharedNeighboursClustering');
    n = data.length;
 
-   if(ak.nativeType(k)!==ak.NUMBER_T || ak.floor(k)!==k || k<0 || k>n) throw new Error('invalid neighbourhood size in ak.sharedNeighbourClustering');
-   if(ak.nativeType(t)!==ak.NUMBER_T || ak.floor(t)!==t || t<0 || t>k) throw new Error('invalid threshold in ak.sharedNeighbourClustering');
+   if(ak.nativeType(k)!==ak.NUMBER_T || ak.floor(k)!==k || k<0 || k>n) throw new Error('invalid neighbourhood size in ak.sharedNeighboursClustering');
+   if(ak.nativeType(t)!==ak.NUMBER_T || ak.floor(t)!==t || t<0 || t>k) throw new Error('invalid threshold in ak.sharedNeighboursClustering');
 
    neighbours = ak.nearestNeighbours(data, data, k, f);
    memberships = new Array(n);
