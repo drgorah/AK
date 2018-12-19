@@ -54,7 +54,7 @@
     memberships[i] = i;
     neighbours[i].sort(ak.numberCompare);
     for(j=0;j<i;++j) {
-     if(mutual(neighbours, i, j) && shared(neighbours, t, i, j)) replace(memberships, memberships[j], i);
+     if(memberships[j]!==i && mutual(neighbours, i, j) && shared(neighbours, t, i, j)) replace(memberships, memberships[j], i);
     }
    }
 
