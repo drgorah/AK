@@ -20,10 +20,9 @@
    var ni = neighbours[i];
    var nj = neighbours[j];
    var n = ni.length;
-   var i = 0;
-   var j = 0;
    var c;
 
+   i = j = 0;
    while(i<n && j<n && t>0) {
     c = ni[i]-nj[j];
     if(c<=0)  ++i;
