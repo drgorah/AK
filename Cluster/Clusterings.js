@@ -57,12 +57,6 @@
    for(i=0;i<n;++i) state[i] = obj.at(i);
   };
 
-  function Cluster(){}
-  Cluster.prototype = {TYPE: ak.CLUSTER_T, valueOf: function(){return ak.NaN;}};
-
-  function Clusters(){}
-  Clusters.prototype = {TYPE: ak.CLUSTERS_T, valueOf: function(){return ak.NaN;}};
-
   function Clustering(){}
   Clustering.prototype = {TYPE: ak.CLUSTERING_T, valueOf: function(){return ak.NaN;}};
 

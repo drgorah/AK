@@ -57,12 +57,6 @@
    for(i=0;i<n;++i) state[i] = obj.at(i);
   };
 
-  function RawCluster(){}
-  RawCluster.prototype = {TYPE: ak.CLUSTER_T, SUB: 'raw', valueOf: function(){return ak.NaN;}};
-
-  function RawClusters(){}
-  RawClusters.prototype = {TYPE: ak.CLUSTERS_T, SUB: 'raw', valueOf: function(){return ak.NaN;}};
-
   function RawClustering(){}
   RawClustering.prototype = {TYPE: ak.CLUSTERING_T, SUB: 'raw', valueOf: function(){return ak.NaN;}};
 
