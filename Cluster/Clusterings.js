@@ -83,19 +83,39 @@
    var i = 0;
    var data;
    while(i<n && ak.nativeType(data)===ak.UNDEFINED_T) data = arr[i++].data;
-   return data;
+   return i<n ? clusterData(data) : data;
+  }
+
+  function matchesArray(d1, d0) {
+   var n0 = d0.size();
+   var i = 0;
+
+   if(d1.length!==n0) return false;
+   while(i<n0 && ak.eq(d1[i], d0.at(i))) ++i;
+   return i===n0;
+  }
+
+  function matchesObject(d1, d0) {
+   var n0 = d0.size();
+   var n1 = d1.size;
+   var i = 0;
+
+   n1 = ak.nativeType(n1)===ak.FUNCTION_T ? Number(n1()) : Number(n1);
+   if(n1!==n0) return false;
+   while(i<n0 && ak.eq(d1.at(i), d0.at(i))) ++i;
+   return i===n0;
   }
 
   function matchesData(d1, d0) {
-   var n, i;
+   var t1 = ak.nativeType(d1);
+   var t0 = ak.nativeType(d0);
 
-   if(ak.nativeType(d1)===ak.UNDEFINED_T) return true;
-   if(ak.nativeType(d0)===ak.UNDEFINED_T) return false;
-   
-   n = d0.size();
-   if(d1.size()!==n) return false;
-   for(i=0;i<n && ak.eq(d1.at(i), d0.at(i));++i);
-   return i===n;
+   switch(t1) {
+    case ak.UNDEFINED_T: return true;
+    case ak.ARRAY_T:     return t0!==ak.UNDEFINED_T && matchesArray(d1, d0);
+    case ak.OBJECT_T:    return t0!==ak.UNDEFINED_T && matchesObject(d1, d0);
+    default:             throw new Error('invalid data in ak.clusterings');
+   }
   }
 
   function clustering(c, d) {
