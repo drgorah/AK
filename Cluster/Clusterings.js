@@ -82,7 +82,8 @@
    var n = arr.length;
    var i = 0;
    var data;
-   while(i<n && ak.nativeType(data)===ak.UNDEFINED_T) data = arr[i++].data;
+
+   while(i<n && ak.nativeType(data=arr[i].data)===ak.UNDEFINED_T) ++i;
    return i<n ? clusterData(data) : data;
   }
 
