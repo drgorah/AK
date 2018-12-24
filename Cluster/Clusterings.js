@@ -108,13 +108,10 @@
   }
 
   function matchesData(d1, d0) {
-   var t1 = ak.nativeType(d1);
-   var t0 = ak.nativeType(d0);
-
-   switch(t1) {
+   switch(ak.nativeType(d1)) {
     case ak.UNDEFINED_T: return true;
-    case ak.ARRAY_T:     return t0!==ak.UNDEFINED_T && matchesArray(d1, d0);
-    case ak.OBJECT_T:    return t0!==ak.UNDEFINED_T && matchesObject(d1, d0);
+    case ak.ARRAY_T:     return matchesArray(d1, d0);
+    case ak.OBJECT_T:    return matchesObject(d1, d0);
     default:             throw new Error('invalid data in ak.clusterings');
    }
   }
