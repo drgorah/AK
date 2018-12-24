@@ -127,9 +127,9 @@
    }
    else {
     if(!matchesData(c.data, d)) throw new Error('mismatched data in ak.clusterings');
-    if(ak.nativeType(d)!==ak.UNDEFINED_T && d.size()!==c.memberships.size()) throw new Error('data/memberships size mismatch in ak.clusterings');
     c = ak.clustering(c.memberships.toArray());
    }
+   if(ak.nativeType(d)!==ak.UNDEFINED_T && d.size()!==c.memberships.size()) throw new Error('data/memberships size mismatch in ak.clusterings');
 
    result = new Clustering();
    result.memberships = c.memberships;
