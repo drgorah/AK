@@ -1,4 +1,4 @@
-//AK/Distribution/GaussianCopula.js
+//AK/Copula/GaussianCopula.js
 
 //Copyright Richard Harris 2017.
 //Distributed under the Boost Software License, Version 1.0.

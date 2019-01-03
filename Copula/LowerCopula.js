@@ -1,4 +1,4 @@
-//AK/Distribution/LowerCopula.js
+//AK/Copula/LowerCopula.js
 
 //Copyright Richard Harris 2018.
 //Distributed under the Boost Software License, Version 1.0.
