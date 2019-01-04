@@ -172,13 +172,17 @@
    clusters.push(c0);
    cache = initCache(c0.clusters, f);
 
-   while(c0.clusters.size()>1) {
+   while(c0.clusters.size()>2) {
     memberships = c0.memberships.toArray();
     mappings = mergeMappings(cache, memberships);
     c1 = mergeClusters(mappings, memberships);
     clusters.push(c1);
-    if(c1.clusters.size()>1) updateCache(cache, mappings, c0, c1, f);
+    if(c1.clusters.size()>2) updateCache(cache, mappings, c0, c1, f);
     c0 = c1;
+   }
+   if(c0.clusters.size()===2) {
+    for(i=0;i<n;++i) memberships[i] = 0;
+    clusters.push(memberships);
    }
    return t===ak.NUMBER_T ? ak.clusterings(clusters) : ak.clusterings(clusters, data);
   };

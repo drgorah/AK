@@ -180,14 +180,18 @@
    clusters.push(c);
    cache = initCache(dist);
 
-   while(c.clusters.size()>1) {
+   while(c.clusters.size()>2) {
     mappings = mergeMappings(cache, memberships);
     c = mergeClusters(mappings, memberships);
     clusters.push(c);
-    if(c.clusters.size()>1) {
+    if(c.clusters.size()>2) {
      updateDistances(dist, mappings);
      updateCache(cache, mappings, memberships, dist);
     }
+   }
+   if(c.clusters.size()===2) {
+    for(i=0;i<n;++i) memberships[i] = 0;
+    clusters.push(memberships);
    }
    return t===ak.MATRIX_T ? ak.rawClusterings(clusters) : ak.rawClusterings(clusters, data);
   };
