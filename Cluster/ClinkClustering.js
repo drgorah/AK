@@ -29,6 +29,10 @@
    return cache;
   }
 
+  function maxDistance(d0, d1) {
+   return isNaN(d0) || isNaN(d1) ? ak.NaN : Math.max(d0, d1);
+  }
+
   function updateDistances(dist, mappings) {
    var n = dist.length;
    var m = mappings.length;
@@ -38,7 +42,7 @@
     mi = mappings[i];
     mi0 = mi[0]; di0 = dist[mi0];
     mi1 = mi[1]; di1 = dist[mi1];
-    for(j=0;j<n;++j) di0[j] = dist[j][mi0] = Math.max(di0[j], di1[j]);
+    for(j=0;j<n;++j) di0[j] = dist[j][mi0] = maxDistance(di0[j], di1[j]);
    }
   }
 

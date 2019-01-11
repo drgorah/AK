@@ -29,6 +29,12 @@
    return cache;
   }
 
+  function minDistance(d0, d1) {
+   if(isNaN(d0)) return d1;
+   if(isNaN(d1)) return d0;
+   return Math.min(d0, d1);
+  }
+
   function updateDistances(dist, mappings) {
    var n = dist.length;
    var m = mappings.length;
@@ -38,7 +44,7 @@
     mi = mappings[i];
     di0 = dist[mi[0]];
     di1 = dist[mi[1]];
-    for(j=0;j<n;++j) di0[j] = Math.min(di0[j], di1[j]);
+    for(j=0;j<n;++j) di0[j] = minDistance(di0[j], di1[j]);
    }
   }
 
