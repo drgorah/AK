@@ -120,7 +120,7 @@
 
   function mergeMappings(cache, memberships) {
    var dist = minDist(cache);
-   var mappings = dist<ak.INFINITY ? minMappings(dist, cache, memberships) : [];
+   var mappings = isNaN(dist) ? [] : minMappings(dist, cache, memberships);
    if(mappings.length>1) compressMappings(mappings);
    return mappings;
   }
