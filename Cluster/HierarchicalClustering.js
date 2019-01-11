@@ -81,14 +81,15 @@
   }
 
   function minDist(cache) {
-   var min = ak.INFINITY;
+   var min = ak.NaN;
    var n = cache.length;
-   var i, qi;
+   var i, qi, d;
 
    for(i=0;i<n;++i) {
     qi = cache[i].q;
     if(ak.nativeType(qi)!==ak.UNDEFINED_T) {
-     min = Math.min(min, firstElement(qi, cache).d);
+     d = firstElement(qi, cache).d;
+     if(isNaN(min) || d<min) min = d;
     }
    }
    return min;

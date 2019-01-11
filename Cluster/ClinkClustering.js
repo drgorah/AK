@@ -78,10 +78,13 @@
 
   function minDist(cache) {
    var n = cache.length;
-   var min = ak.INFINITY;
-   var i;
+   var min = ak.NaN;
+   var i, d;
 
-   for(i=0;i<n-1;++i) min = Math.min(min, cache[i].d);
+   for(i=0;i<n-1;++i) {
+    d = cache[i].d;
+    if(isNaN(min) || d<min) min = d;
+   }
    return min;
   }
 
