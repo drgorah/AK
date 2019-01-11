@@ -20,7 +20,7 @@
    var n = c.size();
    var j, cj;
 
-   for(j=i+1;j<n;j++) {cj = c.at(j); qi.push({c:cj, d:f(ci, cj)});}
+   for(j=i+1;j<n;j++) {cj = c.at(j); qi.push({c:cj, d:Number(f(ci, cj))});}
    return {c:ci, q:ak.minHeap(qi, cacheCompare)};
   }
 
@@ -57,11 +57,11 @@
      qi = [];
      for(j=0;j<i;++j) {
       cj = cache[j];
-      if(ak.nativeType(cj.q)!==ak.UNDEFINED_T) cj.q.add({c:ci.c, d:f(ci.c, cj.c)});
+      if(ak.nativeType(cj.q)!==ak.UNDEFINED_T) cj.q.add({c:ci.c, d:Number(f(ci.c, cj.c))});
      }
      for(j=i+1;j<n;++j) {
       cj = cache[j];
-      if(ak.nativeType(cj.q)!==ak.UNDEFINED_T) qi.push({c:cj.c, d:f(ci.c, cj.c)});
+      if(ak.nativeType(cj.q)!==ak.UNDEFINED_T) qi.push({c:cj.c, d:Number(f(ci.c, cj.c))});
      }
      ci.q = ak.minHeap(qi, cacheCompare);
     }
