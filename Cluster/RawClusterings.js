@@ -127,7 +127,6 @@
     state[i] = rawClustering(arr[i], data);
     if(state[i].memberships.size()!==state[0].memberships.size()) throw new Error('inconsistent memberships in ak.clusterings');
    }
-
   }
 
   constructors[ak.CLUSTERINGS_T] = {};
