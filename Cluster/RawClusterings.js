@@ -69,7 +69,7 @@
    var arg0 = arguments[0];
    var i;
 
-   constructors[ak.CLUSTERINGS_T][ak.nativeType(arg0)](state, arg0, arguments);
+   constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
    c.size = function() {return state.length;};
    c.at = function(i) {return state[i];};
@@ -129,26 +129,24 @@
    }
   }
 
-  constructors[ak.CLUSTERINGS_T] = {};
-
-  constructors[ak.CLUSTERINGS_T][ak.ARRAY_T] = function(state, arr, args) {
+  constructors[ak.ARRAY_T] = function(state, arr, args) {
    var arg1 = args[1];
-   constructors[ak.CLUSTERINGS_T][ak.ARRAY_T][ak.nativeType(arg1)](state, arr, arg1);
+   constructors[ak.ARRAY_T][ak.nativeType(arg1)](state, arr, arg1);
   };
 
-  constructors[ak.CLUSTERINGS_T][ak.ARRAY_T][ak.OBJECT_T] = function(state, arr, data) {
+  constructors[ak.ARRAY_T][ak.OBJECT_T] = function(state, arr, data) {
    rawClusterings(state, arr, rawClusterData(data));
   };
 
-  constructors[ak.CLUSTERINGS_T][ak.ARRAY_T][ak.ARRAY_T] = function(state, arr, data) {
+  constructors[ak.ARRAY_T][ak.ARRAY_T] = function(state, arr, data) {
    rawClusterings(state, arr, rawClusterData(data));
   };
 
-  constructors[ak.CLUSTERINGS_T][ak.ARRAY_T][ak.UNDEFINED_T] = function(state, arr) {
+  constructors[ak.ARRAY_T][ak.UNDEFINED_T] = function(state, arr) {
    rawClusterings(state, arr, firstData(arr));
   };
 
-  constructors[ak.CLUSTERINGS_T][ak.OBJECT_T] = function(state, obj, args) {
+  constructors[ak.OBJECT_T] = function(state, obj, args) {
    var arg1 = args[1];
    var n = obj.size;
    var arr, i;
@@ -156,7 +154,7 @@
    n = (ak.nativeType(n)===ak.FUNCTION_T) ? Number(n()) : Number(n);
    arr = new Array(n);
    for(i=0;i<n;++i) arr[i] = obj.at(i);
-   constructors[ak.CLUSTERINGS_T][ak.ARRAY_T][ak.nativeType(arg1)](state, arr, arg1);
+   constructors[ak.ARRAY_T][ak.nativeType(arg1)](state, arr, arg1);
   };
  };
 
