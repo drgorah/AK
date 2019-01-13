@@ -60,11 +60,11 @@
   function RawClustering(){}
   RawClustering.prototype = {TYPE: ak.CLUSTERING_T, SUB: 'raw', valueOf: function(){return ak.NaN;}};
 
-  function Clusterings(){}
-  Clusterings.prototype = {TYPE: ak.CLUSTERINGS_T, SUB: 'raw', valueOf: function(){return ak.NaN;}};
+  function RawClusterings(){}
+  RawClusterings.prototype = {TYPE: ak.CLUSTERINGS_T, SUB: 'raw', valueOf: function(){return ak.NaN;}};
 
   ak.rawClusterings = function() {
-   var c = new Clusterings();
+   var c = new RawClusterings();
    var state = [];
    var arg0 = arguments[0];
    var i;
