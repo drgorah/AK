@@ -112,7 +112,10 @@
   }
 
   function matchesData(d1, d0) {
-   switch(ak.nativeType(d1)) {
+   var t = ak.nativeType(d1);
+   if(t===ak.FUNCTION_T) t = ak.nativeType(d1=d1());
+
+   switch(t) {
     case ak.UNDEFINED_T: return true;
     case ak.ARRAY_T:     return matchesArray(d1, d0);
     case ak.OBJECT_T:    return matchesObject(d1, d0);

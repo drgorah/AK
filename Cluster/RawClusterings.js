@@ -91,6 +91,39 @@
    return t===ak.UNDEFINED_T ? data : rawClusterData(data);
   }
 
+  function matchesArray(d1, d0) {
+   var n0 = d0.size();
+   var i = 0;
+
+   if(d1.length!==n0) return false;
+   while(i<n0 && ak.eq(d1[i], d0.at(i))) ++i;
+   return i===n0;
+  }
+
+  function matchesObject(d1, d0) {
+   var n0 = d0.size();
+   var n1 = d1.size;
+   var i = 0;
+
+   n1 = ak.nativeType(n1)===ak.FUNCTION_T ? Number(n1()) : Number(n1);
+   if(n1!==n0) return false;
+   while(i<n0 && ak.eq(d1.at(i), d0.at(i))) ++i;
+   return i===n0;
+  }
+
+  function matchesData(d1, d0) {
+   var t = ak.nativeType(d1);
+   if(t===ak.FUNCTION_T) t = ak.nativeType(d1=d1());
+
+   switch(t) {
+    case ak.UNDEFINED_T: return true;
+    case ak.ARRAY_T:     return matchesArray(d1, d0);
+    case ak.OBJECT_T:    return matchesObject(d1, d0);
+    default:             throw new Error('invalid data in ak.rawClusterings');
+   }
+  }
+
+/*
   function matchesData(d1, d0) {
    var n, i;
 
@@ -102,6 +135,7 @@
    for(i=0;i<n && ak.eq(d1.at(i), d0.at(i));++i);
    return i===n;
   }
+*/
 
   function rawClustering(c, d) {
    var result;
