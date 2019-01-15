@@ -81,10 +81,14 @@
   function firstData(arr) {
    var n = arr.length;
    var i = 0;
+   var t = ak.UNDEFINED_T;
    var data;
 
-   while(i<n && ak.nativeType(data=arr[i].data)===ak.UNDEFINED_T) ++i;
-   return i<n ? clusterData(data) : data;
+   while(i<n && t===ak.UNDEFINED_T) {
+    t = ak.nativeType(data=arr[i++].data);
+    if(t===ak.FUNCTION_T) t = ak.nativeType(data=data());
+   }
+   return t===ak.UNDEFINED_T ? data : clusterData(data);
   }
 
   function matchesArray(d1, d0) {
