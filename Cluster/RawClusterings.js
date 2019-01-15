@@ -83,7 +83,7 @@
    var i = 0;
    var data;
    while(i<n && ak.nativeType(data)===ak.UNDEFINED_T) data = arr[i++].data;
-   return data;
+   return i<n ? rawClusterData(data) : data;
   }
 
   function matchesData(d1, d0) {
