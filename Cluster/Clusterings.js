@@ -124,14 +124,14 @@
   }
 
   function clustering(c, d) {
-   var result;
+   var m, t, result;
 
    if(ak.nativeType(c)===ak.ARRAY_T) {
     c = ak.clustering(c);
    }
    else {
     if(!matchesData(c.data, d)) throw new Error('mismatched data in ak.clusterings');
-    c = ak.clustering(c.memberships.toArray());
+    c = ak.clustering({memberships: c.memberships, clusters: c.clusters});
    }
    if(ak.nativeType(d)!==ak.UNDEFINED_T && d.size()!==c.memberships.size()) throw new Error('data/memberships size mismatch in ak.clusterings');
 

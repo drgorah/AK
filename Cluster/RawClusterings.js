@@ -131,9 +131,9 @@
    }
    else {
     if(!matchesData(c.data, d)) throw new Error('mismatched data in ak.rawClusterings');
-    if(ak.nativeType(d)!==ak.UNDEFINED_T && d.size()!==c.memberships.size()) throw new Error('data/memberships size mismatch in ak.rawClusterings');
-    c = ak.rawClustering(c.memberships.toArray());
+    c = ak.rawClustering({memberships: c.memberships, clusters: c.clusters});
    }
+   if(ak.nativeType(d)!==ak.UNDEFINED_T && d.size()!==c.memberships.size()) throw new Error('data/memberships size mismatch in ak.rawClusterings');
 
    result = new RawClustering();
    result.memberships = c.memberships;
