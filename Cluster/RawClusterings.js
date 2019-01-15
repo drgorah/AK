@@ -150,7 +150,7 @@
    if(n>0) state[0] = rawClustering(arr[0], data);
    for(i=1;i<n;++i) {
     state[i] = rawClustering(arr[i], data);
-    if(state[i].memberships.size()!==state[0].memberships.size()) throw new Error('inconsistent memberships in ak.clusterings');
+    if(state[i].memberships.size()!==state[0].memberships.size()) throw new Error('inconsistent memberships in ak.rawClusterings');
    }
   }
 
