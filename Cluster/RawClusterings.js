@@ -123,20 +123,6 @@
    }
   }
 
-/*
-  function matchesData(d1, d0) {
-   var n, i;
-
-   if(ak.nativeType(d1)===ak.UNDEFINED_T) return true;
-   if(ak.nativeType(d0)===ak.UNDEFINED_T) return false;
-   
-   n = d0.size();
-   if(d1.size()!==n) return false;
-   for(i=0;i<n && ak.eq(d1.at(i), d0.at(i));++i);
-   return i===n;
-  }
-*/
-
   function rawClustering(c, d) {
    var result;
 
