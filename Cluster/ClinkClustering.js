@@ -15,22 +15,19 @@
   function initCache(dist) {
    var n = dist.length;
    var cache = new Array(n);
-   var i, j, ci, d;
+   var i, j, ci, d, cmp;
 
-   for(i=0;i<n;++i) cache[i] = {c:[], d:ak.INFINITY};
+   for(i=0;i<n;++i) cache[i] = {c:[], d:ak.NaN};
    for(i=0;i<n-1;++i) {
     ci = cache[i];
     for(j=i+1;j<n;++j) {
      d = dist[i][j];
-     if(d<ci.d) {ci.c = [j]; ci.d = d;}
-     else if(d===ci.d) ci.c.push(j);
+     cmp = ak.floatCompare(d, ci.d);
+     if(cmp<0) {ci.c = [j]; ci.d = d;}
+     else if(cmp===0) ci.c.push(j);
     }
    }
    return cache;
-  }
-
-  function maxDistance(d0, d1) {
-   return isNaN(d0) || isNaN(d1) ? ak.NaN : Math.max(d0, d1);
   }
 
   function updateDistances(dist, mappings) {
@@ -42,30 +39,30 @@
     mi = mappings[i];
     mi0 = mi[0]; di0 = dist[mi0];
     mi1 = mi[1]; di1 = dist[mi1];
-    for(j=0;j<n;++j) di0[j] = dist[j][mi0] = maxDistance(di0[j], di1[j]);
+    for(j=0;j<n;++j) di0[j] = dist[j][mi0] = ak.floatCompare(di0[j], di1[j])>=0 ? di0[j] : di1[j];
    }
   }
 
   function updateCache(cache, mappings, memberships, dist) {
    var n = cache.length;
    var m = mappings.length;
-   var i, j, k, mi0, mi1, di0, di1, ci0, ci1, cj, dj, djk;
+   var i, j, k, mi0, mi1, di0, di1, ci0, ci1, cj, dj, djk, cmp;
 
    for(i=0;i<m;++i) {
     mi0 = mappings[i][0]; di0 = dist[mi0]; ci0 = cache[mi0];
     mi1 = mappings[i][1]; di1 = dist[mi1]; ci1 = cache[mi1];
-    ci0.c.length = 0; ci0.d = ak.INFINITY;
-    ci1.c.length = 0; ci1.d = ak.INFINITY;
+    ci0.c.length = 0; ci0.d = ak.NaN;
+    ci1.c.length = 0; ci1.d = ak.NaN;
 
     for(j=0;j<mi0;++j) if(memberships[j]===j) {
      cj = cache[j];
-     if(cj.c.indexOf(mi0)>=0) {cj.c.length = 0; cj.d = ak.INFINITY;}
-     if(cj.c.indexOf(mi1)>=0) {cj.c.length = 0; cj.d = ak.INFINITY;}
+     if(cj.c.indexOf(mi0)>=0) {cj.c.length = 0; cj.d = ak.NaN;}
+     if(cj.c.indexOf(mi1)>=0) {cj.c.length = 0; cj.d = ak.NaN;}
     }
 
     for(j=mi0+1;j<mi1;++j) if(memberships[j]===j) {
      cj = cache[j];
-     if(cj.c.indexOf(mi1)>=0) {cj.c.length = 0; cj.d = ak.INFINITY;}
+     if(cj.c.indexOf(mi1)>=0) {cj.c.length = 0; cj.d = ak.NaN;}
     }
    }
 
@@ -74,8 +71,9 @@
     dj = dist[j];
     for(k=j+1;k<n;++k) if(memberships[k]===k) {
      djk = dj[k];
-     if(djk<cj.d) {cj.c = [k]; cj.d = djk;}
-     else if(djk===cj.d && cj.c.indexOf(k)<0) cj.c.push(k);
+     cmp = ak.floatCompare(djk, cj.d);
+     if(cmp<0) {cj.c = [k]; cj.d = djk;}
+     else if(cmp===0 && cj.c.indexOf(k)<0) cj.c.push(k);
     }
    }
   }

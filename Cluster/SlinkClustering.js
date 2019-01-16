@@ -15,24 +15,19 @@
   function initCache(dist) {
    var n = dist.length;
    var cache = new Array(n);
-   var i, j, ci, d;
+   var i, j, ci, d, cmp;
 
-   for(i=0;i<n;++i) cache[i] = {c:[], d:ak.INFINITY};
+   for(i=0;i<n;++i) cache[i] = {c:[], d:ak.NaN};
    for(i=0;i<n-1;++i) {
     ci = cache[i];
     for(j=i+1;j<n;++j) {
      d = dist[i][j];
-     if(d<ci.d) {ci.c = [j]; ci.d = d;}
-     else if(d===ci.d) ci.c.push(j);
+     cmp = ak.floatCompare(d, ci.d);
+     if(cmp<0) {ci.c = [j]; ci.d = d;}
+     else if(cmp===0) ci.c.push(j);
     }
    }
    return cache;
-  }
-
-  function minDistance(d0, d1) {
-   if(isNaN(d0)) return d1;
-   if(isNaN(d1)) return d0;
-   return Math.min(d0, d1);
   }
 
   function updateDistances(dist, mappings) {
@@ -44,29 +39,30 @@
     mi = mappings[i];
     di0 = dist[mi[0]];
     di1 = dist[mi[1]];
-    for(j=0;j<n;++j) di0[j] = minDistance(di0[j], di1[j]);
+    for(j=0;j<n;++j) di0[j] = ak.floatCompare(di0[j], di1[j])<=0 ? di0[j] : di1[j];
    }
   }
 
   function cacheDistances(cache, mappings, memberships, dist) {
    var n = cache.length;
    var m = mappings.length;
-   var i, j, mi, mi0, mi1, di0, di1, ci0, ci1, mj, di0j;
+   var i, j, mi, mi0, mi1, di0, di1, ci0, ci1, mj, di0j, cmp;
 
    for(i=0;i<m;++i) {
     mi = mappings[i];
     mi0 = mi[0]; di0 = dist[mi0]; ci0 = cache[mi0];
     mi1 = mi[1]; di1 = dist[mi1]; ci1 = cache[mi1];
 
-    ci0.c.length = 0; ci0.d = ak.INFINITY;
-    ci1.c.length = 0; ci1.d = ak.INFINITY;
+    ci0.c.length = 0; ci0.d = ak.NaN;
+    ci1.c.length = 0; ci1.d = ak.NaN;
 
     for(j=mi0+1;j<n;++j) {
      mj = memberships[j];
      if(mj>mi0) {
       di0j = di0[j];
-      if(di0j<ci0.d) {ci0.c = [mj]; ci0.d = di0j;}
-      else if(di0j===ci0.d && ci0.c.indexOf(mj)<0) ci0.c.push(mj);
+      cmp = ak.floatCompare(di0j, ci0.d);
+      if(cmp<0) {ci0.c = [mj]; ci0.d = di0j;}
+      else if(cmp===0 && ci0.c.indexOf(mj)<0) ci0.c.push(mj);
      }
     }
    }
