@@ -202,5 +202,5 @@
   };
  };
 
- ak.using(['Algorithm/Compare.js', 'Cluster/Clusterings.js' ,'Cluster/DistanceMatrix.js'], define);
+ ak.using(['Algorithm/Compare.js', 'Cluster/RawClusterings.js' ,'Cluster/DistanceMatrix.js'], define);
 })();
