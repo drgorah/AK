@@ -43,39 +43,59 @@
    }
   }
 
-  function updateCache(cache, mappings, memberships, dist) {
+  function cacheClear(cache, mappings, memberships, dist) {
    var n = cache.length;
    var m = mappings.length;
-   var i, j, k, mi0, mi1, di0, di1, ci0, ci1, cj, dj, djk, cmp;
+   var i, j, k, mi0, mi1, ci0, ci1, cj;
 
    for(i=0;i<m;++i) {
-    mi0 = mappings[i][0]; di0 = dist[mi0]; ci0 = cache[mi0];
-    mi1 = mappings[i][1]; di1 = dist[mi1]; ci1 = cache[mi1];
+    mi0 = mappings[i][0]; ci0 = cache[mi0];
+    mi1 = mappings[i][1]; ci1 = cache[mi1];
     ci0.c.length = 0; ci0.d = ak.NaN;
     ci1.c.length = 0; ci1.d = ak.NaN;
 
     for(j=0;j<mi0;++j) if(memberships[j]===j) {
      cj = cache[j];
-     if(cj.c.indexOf(mi0)>=0) {cj.c.length = 0; cj.d = ak.NaN;}
-     if(cj.c.indexOf(mi1)>=0) {cj.c.length = 0; cj.d = ak.NaN;}
+     if(cj.c.indexOf(mi0)>=0 || cj.c.indexOf(mi1)>=0) {
+      cj.c.length = 0;
+      cj.d = ak.NaN;
+     }
     }
 
     for(j=mi0+1;j<mi1;++j) if(memberships[j]===j) {
      cj = cache[j];
-     if(cj.c.indexOf(mi1)>=0) {cj.c.length = 0; cj.d = ak.NaN;}
+     if(cj.c.indexOf(mi1)>=0) {
+      cj.c.length = 0;
+      cj.d = ak.NaN;
+     }
     }
    }
+  }
 
-   for(j=0;j<mi1;++j) if(memberships[j]===j && cache[j].c.length===0) {
-    cj = cache[j];
-    dj = dist[j];
-    for(k=j+1;k<n;++k) if(memberships[k]===k) {
-     djk = dj[k];
-     cmp = ak.floatCompare(djk, cj.d);
-     if(cmp<0) {cj.c = [k]; cj.d = djk;}
-     else if(cmp===0 && cj.c.indexOf(k)<0) cj.c.push(k);
+  function cacheDistances(cache, mappings, memberships, dist) {
+   var n = cache.length;
+   var m = mappings.length;
+   var i, j, k, mi0, mi1, di0, di1, ci0, ci1, cj, dj, djk, cmp;
+
+   for(i=0;i<m;++i) {
+    mi1 = mappings[i][1];
+
+    for(j=0;j<mi1;++j) if(memberships[j]===j && cache[j].c.length===0) {
+     cj = cache[j];
+     dj = dist[j];
+     for(k=j+1;k<n;++k) if(memberships[k]===k) {
+      djk = dj[k];
+      cmp = ak.floatCompare(djk, cj.d);
+      if(cmp<0) {cj.c = [k]; cj.d = djk;}
+      else if(cmp===0 && cj.c.indexOf(k)<0) cj.c.push(k);
+     }
     }
    }
+  }
+
+  function updateCache(cache, mappings, memberships, dist) {
+   cacheClear(cache, mappings, memberships, dist);
+   cacheDistances(cache, mappings, memberships, dist);
   }
 
   function minDist(cache) {
