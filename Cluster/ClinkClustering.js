@@ -72,30 +72,25 @@
    }
   }
 
-  function cacheDistances(cache, mappings, memberships, dist) {
+  function cacheDistances(cache, memberships, dist) {
    var n = cache.length;
-   var m = mappings.length;
-   var i, j, k, mi0, mi1, di0, di1, ci0, ci1, cj, dj, djk, cmp;
+   var i, j, ci, di, dij, cmp;
 
-   for(i=0;i<m;++i) {
-    mi1 = mappings[i][1];
-
-    for(j=0;j<mi1;++j) if(memberships[j]===j && cache[j].c.length===0) {
-     cj = cache[j];
-     dj = dist[j];
-     for(k=j+1;k<n;++k) if(memberships[k]===k) {
-      djk = dj[k];
-      cmp = ak.floatCompare(djk, cj.d);
-      if(cmp<0) {cj.c = [k]; cj.d = djk;}
-      else if(cmp===0 && cj.c.indexOf(k)<0) cj.c.push(k);
-     }
+   for(i=0;i<n;++i) if(memberships[i]===i && cache[i].c.length===0) {
+    ci = cache[i];
+    di = dist[i];
+    for(j=i+1;j<n;++j) if(memberships[j]===j) {
+     dij = di[j];
+     cmp = ak.floatCompare(dij, ci.d);
+     if(cmp<0) {ci.c = [j]; ci.d = dij;}
+     else if(cmp===0 && ci.c.indexOf(j)<0) ci.c.push(j);
     }
    }
   }
 
   function updateCache(cache, mappings, memberships, dist) {
    cacheClear(cache, mappings, memberships, dist);
-   cacheDistances(cache, mappings, memberships, dist);
+   cacheDistances(cache, memberships, dist);
   }
 
   function minDist(cache) {
