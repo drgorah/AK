@@ -83,7 +83,7 @@
    }
   }
 
-  function cacheMappings(cache, mappings, memberships) {
+  function cacheMappings(cache, mappings) {
    var m = mappings.length;
    var i, j, mi, mi0, mi1, cj, k;
 
@@ -106,7 +106,7 @@
   function updateCache(cache, mappings, memberships, dist) {
    cacheClear(cache, mappings);
    cacheDistances(cache, mappings, memberships, dist);
-   cacheMappings(cache, mappings, memberships);
+   cacheMappings(cache, mappings);
   }
 
   function minDist(cache) {

@@ -46,7 +46,7 @@
   function cacheClear(cache, mappings, memberships, dist) {
    var n = cache.length;
    var m = mappings.length;
-   var i, j, k, mi0, mi1, ci0, ci1, cj;
+   var i, j, k, mi0, mi1, ci0, ci1, cj, cj0, cj1;
 
    for(i=0;i<m;++i) {
     mi0 = mappings[i][0]; ci0 = cache[mi0];
@@ -56,18 +56,27 @@
 
     for(j=0;j<mi0;++j) if(memberships[j]===j) {
      cj = cache[j];
-     if(cj.c.indexOf(mi0)>=0 || cj.c.indexOf(mi1)>=0) {
-      cj.c.length = 0;
-      cj.d = ak.NaN;
+     cj0 = cj.c.indexOf(mi0);
+     cj1 = cj.c.indexOf(mi1);
+
+     if(cj1>=0) {
+      if(cj0<0) {cj.c[cj1] = mi0; cj0 = cj1;}
+      else {
+       if(cj0===cj.c.length-1) cj0 = cj1;
+       cj.c[cj1] = cj.c[cj.c.length-1];
+       cj.c.pop();
+      }
      }
+     if(cj0>=0 && dist[j][mi0]!==cj.d) {cj.c[cj0] = cj.c[cj.c.length-1]; cj.c.pop();}
+     if(cj.c.length===0) cj.d = ak.NaN;
     }
 
     for(j=mi0+1;j<mi1;++j) if(memberships[j]===j) {
      cj = cache[j];
-     if(cj.c.indexOf(mi1)>=0) {
-      cj.c.length = 0;
-      cj.d = ak.NaN;
-     }
+     cj1 = cj.c.indexOf(mi1);
+
+     if(cj1>=0) {cj.c[cj1] = cj.c[cj.c.length-1]; cj.c.pop();}
+     if(cj.c.length===0) cj.d = ak.NaN;
     }
    }
   }
