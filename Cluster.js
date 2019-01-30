@@ -11,7 +11,6 @@
 (function() {
  var all = [];
  all.push('Cluster/Clade.js');
- all.push('Cluster/ClinkClustering.js');
  all.push('Cluster/ClusterDistortion.js');
  all.push('Cluster/Clustering.js');
  all.push('Cluster/Clusterings.js');
