@@ -17,5 +17,6 @@
  all.push('Matrix/ComplexMatrix.js');
  all.push('Matrix/CholeskyDecomposition.js');
  all.push('Matrix/ComplexCholeskyDecomposition.js');
+ all.push('Matrix/SpectralDecomposition.js');
  ak.using(all);
 })();
