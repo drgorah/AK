@@ -37,150 +37,146 @@
    return ak.matrix(m);
   }
 
-  function initialState(m, n) {
-   var r, c, mr;
+  function initialState(a, n) {
+   var r, c, ar;
 
-   m = m.toArray();
-
+   a = a.toArray();
    for(r=0;r<n;++r) {
-    mr = m[r];
-    for(c=0;c<r;++c) {
-     mr[c] = m[c][r] = 0.5*(mr[c]+m[c][r]);
-    }
+    ar = a[r];
+    for(c=0;c<r;++c) ar[c] = 0.5*(ar[c]+a[c][r]);
    }
-   return m;
+   return {a: a, d: new Array(n), e: new Array(n)};
   }
 
-  function householder(m, n) {
-   var v = new Array(n);
-   var t = new Array(n);
-   var a = new Array(n);
-   var b = new Array(n-1);
-   var r, c, s, d, i, j, k;
-   var mr, mr1, br, ar1, mi, ti, vi;
-   var ai, aj, tij, mij, vij;
+  function tred2(a, d, e, n) {
+   var i, j, k, ai, aj, aij, f, g, di, s, ej;
+  
+   for(i=n-1;i>1;--i) {
+    ai = a[i];
 
-   for(i=0;i<n;++i) t[i] = new Array(n);
-
-   for(r=0;r<n-2;++r) {
-    mr = m[r];
     s = 0;
-    for(c=r+1;c<n;++c) s += mr[c]*mr[c];
-    s = Math.sqrt(s);
-    mr1 = mr[r+1];
-    if(mr1>0)  s = -s;
-    d = Math.sqrt(2*s*(s-mr1));
-    a[r] = mr[r];
-    a[r+1] = ar1 = (mr1-s)/d;
-    for(c=r+2;c<n;++c) a[c] = mr[c]/d;
+    for(k=0;k<i;++k) s += Math.abs(ai[k]);
 
-    br = mr1 * (1-2*ar1*ar1);
-    for(c=r+2;c<n;++c) br -= 2*a[c]*ar1*mr[c];
-    b[r] = br;
-
-    for(i=r+1;i<n;++i) {
-     mi = m[i]; ti = t[i];
-      for(j=r+1;j<n;++j) {
-      tij = mi[j]; aj = a[j];
-      for(k=r+1;k<n;++k) tij -= 2*a[k]*aj*mi[k];
-      ti[j] = tij;
-     }
-    }
-
-    for(i=r+1;i<n;++i) {
-     mi = m[i]; ti = t[i]; ai = a[i];
-     for(j=r+1;j<n;++j) {
-      mij = ti[j];
-      for(k=r+1;k<n;++k) mij -= 2*ai*a[k]*t[k][j];
-      mi[j] = mij;
-     }
-    }
-
-    if(r===0) {
-     for(i=0;i<n;++i) v[i] = new Array(n);
-     vi = v[0];
-     vi[0] = 1;
-     for(j=1;j<n;++j) vi[j] = v[j][0] = 0;
-
-     for(i=1;i<n;++i) {
-      vi = v[i];
-      vi[i] = 1-2*a[i]*a[i];
-      for(j=i+1;j<n;++j) vi[j] = v[j][i] = -2*a[i]*a[j];
-     }
+    if(s===0) {
+     d[i] = 0;
+     e[i] = ai[i-1];
     }
     else {
-     for(i=0;i<n;++i) {
-      ti = t[i]; vi = v[i];
-      for(j=r+1;j<n;++j) ti[j] = vi[j];
-      for(j=r+1;j<n;++j) {
-       aj = a[j]; vij = vi[j];
-       for(k=r+1;k<n;++k) vij -= 2*a[k]*aj*ti[k];
-       vi[j] = vij;
-      }
+     di = 0;
+     for(k=0;k<i;++k) {
+      ai[k] /= s;
+      di += ai[k]*ai[k];
+     }
+     f = ai[i-1];
+     g = f>=0 ? -Math.sqrt(di) : Math.sqrt(di);
+     e[i] = s*g;
+     di -= f*g;
+     d[i] = di;
+     ai[i-1] = f-g;
+     f = 0;
+     for(j=0;j<i;++j) {
+      aj = a[j];
+      aj[i] = ai[j]/di;
+      g = 0;
+      for(k=0;k<=j;++k)  g += aj[k]*ai[k];
+      for(k=j+1;k<i;++k) g += a[k][j]*ai[k];
+      e[j] = g/di;
+      f += e[j]*ai[j];
+     }
+     for(j=0;j<i;++j) {
+      aj = a[j];
+      aij = ai[j];
+      e[j] -= 0.5*aij*f/di;
+      ej = e[j];
+      for(k=0;k<=j;k++) aj[k] -= aij*e[k]+ej*ai[k];
      }
     }
    }
-   a[r] = m[r][r];
-   a[r+1] = m[r+1][r+1];
-   b[r] = m[r][r+1];
-   return {v: v, a: a, b: b};
+  
+   ai = a[0]; aj = a[1];
+
+   d[0] = ai[0]; d[1] = aj[1];
+   e[0] = 0;     e[1] = aj[0];
+
+   ai[0] = aj[1] = 1;
+   ai[1] = aj[0] = 0;
+  
+   for(i=2;i<n;++i) {
+    ai = a[i];
+    if(d[i]!==0) {
+     for(j=0;j<i;++j) {
+      g = 0;
+      for(k=0;k<i;++k) g += ai[k]*a[k][j];
+      for(k=0;k<i;++k) a[k][j] -= g*a[k][i];
+     }
+    }
+    d[i] = ai[i];
+    ai[i] = 1;
+    for(j=0;j<i;++j) a[j][i] = ai[j] = 0;
+   }
   }
 
-  function givens(v, a, b, n, e) {
-   var u = n;
-   var r, c, r0, r1, r2, d, s, x, z, h
-   var s0, c0, s0s0, s0c0, c0c0;
+  function tqli(a, d, e, n, eps) {
+   var i, k, l, m, it;
+   var g, r, s, c, p, sei1, cei1, ak, aki0, aki1;
+  
+   for(l=0;l<n-1;++l) {
+    it = 0;
 
-   while(--u>0) {
-    while(Math.abs(b[u-1])>e*(1+Math.abs(a[u-1])+Math.abs(a[u]))) {
-     r0 = a[u-1];
-     r1 = b[u-1];
-     r2 = a[u];
-     d = (r0-r2)/2;
-     s = d > 0 ? r2 - r1*r1/(d + Math.sqrt(d*d+r1*r1))
-               : r2 - r1*r1/(d - Math.sqrt(d*d+r1*r1));
-     x = a[0] - s;
-     z = b[0];
+    do {
+     m = l;
+     while(m<n-1 && Math.abs(e[m+1])>=eps*(Math.abs(d[m])+Math.abs(d[m+1]))) ++m;
 
-     for(c=0;c<u;++c) {
-      h = Math.hypot(x, z);
-      s0 = -z/h;
-      c0 =  x/h;
-      s0s0 = s0*s0;
-      s0c0 = s0*c0;
-      c0c0 = c0*c0;
+     if(m!==l) {
+      if(++it===32) throw new Error('convergence failure in ak.spectralDecomposition');
 
-      if(c>0) b[c-1] = c0*b[c-1]-s0*z;
+      g = (d[l+1]-d[l])/(2*e[l+1]);
+      g = g>=0 ? d[m]-d[l]+e[l+1]/(g+Math.hypot(g, 1))
+               : d[m]-d[l]+e[l+1]/(g-Math.hypot(g, 1));
+      s = c = 1;
+      p = 0;
+      for(i=m-1;i>=l;--i) {
+       sei1 = s*e[i+1];
+       cei1 = c*e[i+1];
+       e[i+2] = Math.hypot(sei1, g);
 
-      r0 = a[c];
-      r1 = b[c];
-      r2 = a[c+1];
-      a[c] = c0c0*r0-2*s0c0*r1+s0s0*r2;
-      b[c] = s0c0*r0+(c0c0-s0s0)*r1-s0c0*r2;
-      a[c+1] = s0s0*r0+2*s0c0*r1+c0c0*r2;
-
-      if(c<u-1) {
-       x = b[c];
-       z = -s0*b[c+1];
-       b[c+1] *= c0;
+       if(e[i+2]===0) {
+        d[i+1] -= p;
+        e[m+1] = 0;
+       }
+       else {
+        s = sei1/e[i+2];
+        c = g/e[i+2];
+        g = d[i+1]-p;
+        r = (d[i]-g)*s+2*c*cei1;
+        p = s*r
+        d[i+1] = g+p;
+        g = c*r-cei1;
+        for(k=0;k<n;++k) {
+         ak = a[k];
+         aki0 = ak[i];
+         aki1 = ak[i+1];
+         ak[i]   = c*aki0-s*aki1;
+         ak[i+1] = s*aki0+c*aki1;
+        }
+       }
       }
-
-      for(r=0;r<n;++r) {
-       r0 = v[r][c];
-       r1 = v[r][c+1];
-       v[r][c] = c0*r0-s0*r1;
-       v[r][c+1] = s0*r0+c0*r1;
+      if(r!==0 || i<l-2) {
+       d[l] -= p;
+       e[l+1] = g;
+       e[m+1] = 0;
       }
      }
-    }
+    } while(m!==l);
    }
-   return {v: ak.matrix(v), l: ak.vector(a)};
   }
 
   function fromMatrix(m, e) {
    var n = m.rows();
-   var s = householder(initialState(m, n), n);
-   return givens(s.v, s.a, s.b, n, e);
+   var s = initialState(m, n);
+   tred2(s.a, s.d, s.e, n);
+   tqli(s.a, s.d, s.e, n, e);
+   return {v: ak.matrix(s.a), l: ak.vector(s.d)};
   }
 
   ak.spectralDecomposition = function() {
