@@ -206,6 +206,18 @@ if(!ak) ak = {};
  ak.round = Math.round(ak.INT_MAX)===ak.INT_MAX && Math.round(-ak.INT_MAX)===-ak.INT_MAX ? Math.round : function(x) {return Math.abs(x)<ROUND_MAX ? Math.round(x) : Number(x)};
  ak.trunc = function(x) {return x>=0 ? ak.floor(x) : ak.ceil(x);};
 
+ ak.hypot = Math.hypot;
+ if(ak.nativeType(ak.hypot)===ak.UNDEFINED_T) {
+  ak.hypot = function(x, y) {
+   x = Math.abs(x);
+   y = Math.abs(y);
+   if(!isFinite(x) || !isFinite(y)) return x+y;
+   if(x>y) {y/=x; return x*Math.sqrt(1+y*y);}
+   if(y>0) {x/=y; return y*Math.sqrt(1+x*x);}
+   return 0;
+  };
+ }
+
  ak.diff = function(lhs, rhs) {return ak.dist(lhs, rhs)/(1+Math.min(ak.abs(lhs), ak.abs(rhs)));};
 
  function not(x) {return !x;}
