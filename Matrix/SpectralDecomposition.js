@@ -223,8 +223,11 @@
    return o;
   }
 
-  function fromMatrix(m, n, e, steps) {
+  function fromMatrix(m, e, steps) {
+   var n = m.rows();
    var s, o;
+
+   if(m.cols()!==n) throw new Error('non-square matrix in ak.spectralDecomposition');
 
    if(n<2) return {v:ak.matrix('identity', n), l:ak.vector(n, m.at(0, 0))};
    if(n<3) return jacobi(m.toArray(), e);
@@ -277,19 +280,19 @@
    steps = ak.floor(Math.abs(steps));
    if(isNaN(steps)) throw new Error('non-numeric steps in ak.spectralDecomposition');
 
-   s = fromMatrix(m, m.rows(), e, steps);
+   s = fromMatrix(m, e, steps);
    state.v = s.v;
    state.l = s.l;
   }
 
   constructors[ak.MATRIX_T][ak.NUMBER_T][ak.UNDEFINED_T] = function(state, m, e) {
-   var s = fromMatrix(m, m.rows(), e, 30);
+   var s = fromMatrix(m, e, 30);
    state.v = s.v;
    state.l = s.l;
   };
 
   constructors[ak.MATRIX_T][ak.UNDEFINED_T] = function(state, m) {
-   var s = fromMatrix(m, m.rows(), Math.pow(ak.EPSILON, 0.75), 30);
+   var s = fromMatrix(m, Math.pow(ak.EPSILON, 0.75), 30);
    state.v = s.v;
    state.l = s.l;
   };
