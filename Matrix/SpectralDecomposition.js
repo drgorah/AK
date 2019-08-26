@@ -37,21 +37,29 @@
    return ak.matrix(m);
   }
 
-  function jacobi(q) {
+  function jacobi(q, e) {
    var q00 = q[0][0];
    var q01 = q[0][1]+q[1][0];
    var q11 = q[1][1];
-   var t0 = (q11>=q00) ? q01 / ((q11-q00) + ak.hypot(q11-q00, q01))
-                       : q01 / ((q11-q00) - ak.hypot(q11-q00, q01));
-   var c0 = 1/ak.hypot(t0, 1);
-   var s0 = c0*t0;
-   var c0c0 = c0*c0;
-   var s0s0 = s0*s0;
-   var c0s0 = c0*s0;
-   var qcs = q01*c0s0;
+   var t0, c0, s0, c0c0, s0s0, c0s0, qcs, d0, d1;
 
-   var d0 = q00*c0c0 + q11*s0s0 - qcs;
-   var d1 = q00*s0s0 + q11*c0c0 + qcs;
+   if(Math.abs(q01)>2*e*(1+Math.abs(q00)+Math.abs(q11))) {
+    t0 = (q11>=q00) ? q01 / ((q11-q00) + ak.hypot(q11-q00, q01))
+                    : q01 / ((q11-q00) - ak.hypot(q11-q00, q01));
+    c0 = 1/ak.hypot(t0, 1);
+    s0 = c0*t0;
+    c0c0 = c0*c0;
+    s0s0 = s0*s0;
+    c0s0 = c0*s0;
+    qcs = q01*c0s0;
+
+    d0 = q00*c0c0 + q11*s0s0 - qcs;
+    d1 = q00*s0s0 + q11*c0c0 + qcs;
+   }
+   else {
+    c0 = 1;   s0 = 0;
+    d0 = q00; d1 = q11;
+   }
 
    q[0][0] =  c0; q[0][1] = s0;
    q[1][0] = -s0; q[1][1] = c0;
@@ -219,7 +227,7 @@
    var s, o;
 
    if(n<2) return {v:ak.matrix('identity', n), l:ak.vector(n, m.at(0, 0))};
-   if(n<3) return jacobi(m.toArray());
+   if(n<3) return jacobi(m.toArray(), e);
 
    s = initialState(m, n);
    o = 0;
