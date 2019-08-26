@@ -37,146 +37,195 @@
    return ak.matrix(m);
   }
 
-  function initialState(a, n) {
-   var r, c, ar;
+  function jacobi(q) {
+   var q00 = q[0][0];
+   var q01 = q[0][1]+q[1][0];
+   var q11 = q[1][1];
+   var t0 = (q11>=q00) ? q01 / ((q11-q00) + ak.hypot(q11-q00, q01))
+                       : q01 / ((q11-q00) - ak.hypot(q11-q00, q01));
+   var c0 = 1/ak.hypot(t0, 1);
+   var s0 = c0*t0;
+   var c0c0 = c0*c0;
+   var s0s0 = s0*s0;
+   var c0s0 = c0*s0;
+   var qcs = q01*c0s0;
 
-   a = a.toArray();
-   for(r=0;r<n;++r) {
-    ar = a[r];
-    for(c=0;c<r;++c) ar[c] = 0.5*(ar[c]+a[c][r]);
-   }
-   return {a: a, d: new Array(n), e: new Array(n)};
+   var d0 = q00*c0c0 + q11*s0s0 - qcs;
+   var d1 = q00*s0s0 + q11*c0c0 + qcs;
+
+   q[0][0] =  c0; q[0][1] = s0;
+   q[1][0] = -s0; q[1][1] = c0;
+
+   return {v:ak.matrix(q), l:ak.vector([d0, d1])};
   }
 
-  function tred2(a, d, e, n) {
-   var i, j, k, ai, aj, aij, f, g, di, s, ej;
+  function initialState(m, n) {
+   var r, c, mr;
+
+   m = m.toArray();
+   for(r=0;r<n;++r) {
+    mr = m[r];
+    for(c=0;c<r;++c) mr[c] = m[c][r] = 0.5*(mr[c]+m[c][r]);
+   }
+   return {q: m, d0: new Array(n), d1: new Array(n-1)};
+  }
+
+  function householder(q, d0, d1, n) {
+   var c, s, r, d, p, rr, cc, z, qc, qrr, q0;
   
-   for(i=n-1;i>1;--i) {
-    ai = a[i];
-
-    s = 0;
-    for(k=0;k<i;++k) s += Math.abs(ai[k]);
-
-    if(s===0) {
-     d[i] = 0;
-     e[i] = ai[i-1];
+   for(c=0;c<n-2;++c) {
+    z = 0;
+    qc = q[c];
+    for(r=c+1;r<n;++r) z += Math.abs(qc[r]);
+  
+    if(z>0) {
+     s = 0;
+     for(r=c+1;r<n;++r) {
+      qc[r] = q[r][c] /= z;
+      s += qc[r]*qc[r];
+     }
+     s = Math.sqrt(s);
+     if(qc[c+1]>0) s = -s;
+     d = Math.sqrt(2*s*(s-qc[c+1]));
+     qc[c+1] -= s;
+     for(cc=c+1;cc<n;++cc) qc[cc] /= d;
+  
+     p = 0;
+     for(cc=c+1;cc<n;++cc) p += q[cc][c]*qc[cc];
+     q[c+1][c] -= 2*qc[c+1]*p;
+  
+     for(cc=c+1;cc<n;++cc) {
+      p = 0;
+      for(rr=c+1;rr<n;++rr) p += qc[rr]*q[rr][cc];
+      for(rr=c+1;rr<n;++rr) q[rr][cc] -= 2*qc[rr]*p;
+     }
+  
+     for(rr=c+1;rr<n;++rr) {
+      qrr = q[rr];
+      p = 0;
+      for(cc=c+1;cc<n;++cc) p += qrr[cc]*qc[cc];
+      for(cc=c+1;cc<n;++cc) qrr[cc] -= 2*qc[cc]*p;
+     }
     }
     else {
-     di = 0;
-     for(k=0;k<i;++k) {
-      ai[k] /= s;
-      di += ai[k]*ai[k];
-     }
-     f = ai[i-1];
-     g = f>=0 ? -Math.sqrt(di) : Math.sqrt(di);
-     e[i] = s*g;
-     di -= f*g;
-     d[i] = di;
-     ai[i-1] = f-g;
-     f = 0;
-     for(j=0;j<i;++j) {
-      aj = a[j];
-      aj[i] = ai[j]/di;
-      g = 0;
-      for(k=0;k<=j;++k)  g += aj[k]*ai[k];
-      for(k=j+1;k<i;++k) g += a[k][j]*ai[k];
-      e[j] = g/di;
-      f += e[j]*ai[j];
-     }
-     for(j=0;j<i;++j) {
-      aj = a[j];
-      aij = ai[j];
-      e[j] -= 0.5*aij*f/di;
-      ej = e[j];
-      for(k=0;k<=j;k++) aj[k] -= aij*e[k]+ej*ai[k];
-     }
+     z += 1;
+    }
+  
+    d0[c] = qc[c];
+    d1[c] = q[c+1][c]*z;
+   }
+  
+   d0[n-2] = q[n-2][n-2];
+   d0[n-1] = q[n-1][n-1];
+   d1[n-2] = q[n-1][n-2];
+  
+   for(cc=0;cc<n-1;++cc) q[n-1][cc] = 0;
+   q[n-1][n-1] = 1;
+  
+   for(c=n-3;c>=0;--c) {
+    for(cc=0;cc<n;++cc) q[c+1][cc] = 0;
+    q[c+1][c+1] = 1;
+  
+    for(cc=c+1;cc<n;++cc) q[cc][c+1] -= 2*q[c][cc]*q[c][c+1];
+  
+    for(rr=c+2;rr<n;++rr) {
+     p = 0;
+     for(cc=c+1;cc<n;++cc) p += q[cc][rr]*q[c][cc];
+     for(cc=c+1;cc<n;++cc) q[cc][rr] -= 2*q[c][cc]*p;
     }
    }
-  
-   ai = a[0]; aj = a[1];
+   q0 = q[0];
+   for(cc=1;cc<n;++cc) q0[cc] = 0;
+   q0[0] = 1;
+  }
 
-   d[0] = ai[0]; d[1] = aj[1];
-   e[0] = 0;     e[1] = aj[0];
-
-   ai[0] = aj[1] = 1;
-   ai[1] = aj[0] = 0;
+  function givens(q, d0, d1, o, n, e, steps) {
+   var step = 0;
+   var nn, c, r, r0, r1, qr, qr0, qr1, d01, d02, d12, d, x, z, h;
+   var s0, c0, s0s0, c0c0, c0s0;
+   var m00, m10, m11, m21, m22, m23, mcs;
   
-   for(i=2;i<n;++i) {
-    ai = a[i];
-    if(d[i]!==0) {
-     for(j=0;j<i;++j) {
-      g = 0;
-      for(k=0;k<i;++k) g += ai[k]*a[k][j];
-      for(k=0;k<i;++k) a[k][j] -= g*a[k][i];
+   while(o<n-2 && Math.abs(d1[o])<=e*(1+Math.abs(d0[o])+Math.abs(d0[o+1]))) ++o;
+   c = o;
+  
+   for(nn=o+1;nn<n-1 && Math.abs(d1[nn])>e*(1+Math.abs(d0[nn])+Math.abs(d0[nn+1]));++nn);
+   ++nn;
+  
+   while(c!==o || Math.abs(d1[nn-2])>e*(1+Math.abs(d0[nn-2])+Math.abs(d0[nn-1]))) {
+    if(step++===steps) throw new Error('failure to converge in ak.spectralDecomposition');
+  
+    if(c===o) {
+     d01 = d0[nn-1]; d02 = d0[nn-2]; d12 = d1[nn-2];
+     d = (d02-d01)/2;
+     x = d>0 ? d0[c] - d01 + d12*d12/(d + ak.hypot(d, d12))
+             : d0[c] - d01 + d12*d12/(d - ak.hypot(d, d12));
+     z = d1[c];
+    }
+    else {
+     x = d1[c-1];
+    }
+  
+    h = ak.hypot(x, z);
+    s0 = -z/h; s0s0 = s0*s0;
+    c0 =  x/h; c0c0 = c0*c0;
+    c0s0 = c0*s0;
+  
+    if(c===o) {
+     m00 = d0[c]; m10 = d1[c]; m11 = d0[c+1]; 
+     mcs = 2*m10*c0s0;
+  
+     d0[c]   = m00*c0c0 + m11*s0s0 - mcs;
+     d0[c+1] = m00*s0s0 + m11*c0c0 + mcs;
+     d1[c]   = (m00-m11)*c0s0 + m10*(c0c0-s0s0);
+  
+     if(c<nn-2) {
+      m21 = d1[c+1];
+      d1[c+1] = m21*c0;
+      z = -m21*s0;
      }
     }
-    d[i] = ai[i];
-    ai[i] = 1;
-    for(j=0;j<i;++j) a[j][i] = ai[j] = 0;
-   }
-  }
-
-  function tqli(a, d, e, n, eps) {
-   var i, k, l, m, it;
-   var g, r, s, c, p, sei1, cei1, ak, aki0, aki1;
+    else {
+     m10 = d1[c-1]; m11 = d0[c];
+     m21 = d1[c];   m22 = d0[c+1];
+     mcs = 2*m21*c0s0;
   
-   for(l=0;l<n-1;++l) {
-    it = 0;
-
-    do {
-     m = l;
-     while(m<n-1 && Math.abs(e[m+1])>=eps*(Math.abs(d[m])+Math.abs(d[m+1]))) ++m;
-
-     if(m!==l) {
-      if(++it===32) throw new Error('convergence failure in ak.spectralDecomposition');
-
-      g = (d[l+1]-d[l])/(2*e[l+1]);
-      g = g>=0 ? d[m]-d[l]+e[l+1]/(g+Math.hypot(g, 1))
-               : d[m]-d[l]+e[l+1]/(g-Math.hypot(g, 1));
-      s = c = 1;
-      p = 0;
-      for(i=m-1;i>=l;--i) {
-       sei1 = s*e[i+1];
-       cei1 = c*e[i+1];
-       e[i+2] = Math.hypot(sei1, g);
-
-       if(e[i+2]===0) {
-        d[i+1] -= p;
-        e[m+1] = 0;
-       }
-       else {
-        s = sei1/e[i+2];
-        c = g/e[i+2];
-        g = d[i+1]-p;
-        r = (d[i]-g)*s+2*c*cei1;
-        p = s*r
-        d[i+1] = g+p;
-        g = c*r-cei1;
-        for(k=0;k<n;++k) {
-         ak = a[k];
-         aki0 = ak[i];
-         aki1 = ak[i+1];
-         ak[i]   = c*aki0-s*aki1;
-         ak[i+1] = s*aki0+c*aki1;
-        }
-       }
-      }
-      if(r!==0 || i<l-2) {
-       d[l] -= p;
-       e[l+1] = g;
-       e[m+1] = 0;
-      }
+     d0[c]   = m11*c0c0 + m22*s0s0 - mcs;
+     d0[c+1] = m11*s0s0 + m22*c0c0 + mcs;
+     d1[c-1] = m10*c0 - z*s0;
+     d1[c]   = (m11-m22)*c0s0 + m21*(c0c0-s0s0);
+  
+     if(c<nn-2) {
+      m23 = d1[c+1];
+      d1[c+1] = m23*c0;
+      z = -m23*s0;
      }
-    } while(m!==l);
+    }
+  
+    for(r=0;r<n;++r) {
+     qr = q[r]; qr0 = qr[c]; qr1 = qr[c+1];
+     qr[c]   = qr0*c0 - qr1*s0;
+     qr[c+1] = qr0*s0 + qr1*c0;
+    }
+  
+    if(++c===nn-1) c = o;
    }
+  
+   if(isNaN(d1[nn-2])) d0[nn-1] = d0[nn-2] = ak.NaN;
+   if(isNaN(d0[nn-1]) || isNaN(d0[nn-2])) return ak.NaN;
+   return o;
   }
 
-  function fromMatrix(m, e) {
-   var n = m.rows();
-   var s = initialState(m, n);
-   tred2(s.a, s.d, s.e, n);
-   tqli(s.a, s.d, s.e, n, e);
-   return {v: ak.matrix(s.a), l: ak.vector(s.d)};
+  function fromMatrix(m, n, e, steps) {
+   var s, o;
+
+   if(n<2) return {v:ak.matrix('identity', n), l:ak.vector(n, m.at(0, 0))};
+   if(n<3) return jacobi(m.toArray());
+
+   s = initialState(m, n);
+   o = 0;
+   householder(s.q, s.d0, s.d1, n);
+   while(o<n-2) o = givens(s.q, s.d0, s.d1, o, n, e, steps);
+   return {v: ak.matrix(s.q), l: ak.vector(s.d0)};
   }
 
   ak.spectralDecomposition = function() {
@@ -201,31 +250,38 @@
 
   var constructors = {};
 
-  constructors[ak.MATRIX_T] = function(state, arg0, args) {
+  constructors[ak.MATRIX_T] = function(state, m, args) {
    var arg1 = args[1];
-   constructors[ak.MATRIX_T][ak.type(arg1)](state, arg0, arg1);
+   if(m.cols()!==m.rows()) throw new Error('non-square matrix in ak.spectralDecomposition');
+   constructors[ak.MATRIX_T][ak.type(arg1)](state, m, arg1, args);
   };
 
-  constructors[ak.MATRIX_T][ak.NUMBER_T] = function(state, m, e) {
-   var n = m.rows();
+  constructors[ak.MATRIX_T][ak.NUMBER_T] = function(state, m, e, args) {
+   var arg2 = args[2];
+   e = Math.abs(e);
+   if(isNaN(e)) throw new Error('non-numeric threshold in ak.spectralDecomposition');
+   constructors[ak.MATRIX_T][ak.NUMBER_T][ak.type(arg2)](state, m, e, arg2);
+  }
+
+  constructors[ak.MATRIX_T][ak.NUMBER_T][ak.NUMBER_T] = function(state, m, e, steps) {
    var s;
 
-   if(m.cols()!==n) throw new Error('non-square matrix in ak.spectralDecomposition');
+   steps = ak.floor(Math.abs(steps));
+   if(isNaN(steps)) throw new Error('non-numeric steps in ak.spectralDecomposition');
 
-   s = (n>1) ? fromMatrix(m, Math.abs(e)) : {v:ak.matrix('identity', n), l:ak.vector(n, m.at(0, 0))};
+   s = fromMatrix(m, m.rows(), e, steps);
+   state.v = s.v;
+   state.l = s.l;
+  }
 
+  constructors[ak.MATRIX_T][ak.NUMBER_T][ak.UNDEFINED_T] = function(state, m, e) {
+   var s = fromMatrix(m, m.rows(), e, 30);
    state.v = s.v;
    state.l = s.l;
   };
 
   constructors[ak.MATRIX_T][ak.UNDEFINED_T] = function(state, m) {
-   var n = m.rows();
-   var s;
-
-   if(m.cols()!==n) throw new Error('non-square matrix in ak.spectralDecomposition');
-
-   s = (n>1) ? fromMatrix(m, ak.EPSILON) : {v:ak.matrix('identity', n), l:ak.vector(n, m.at(0, 0))};
-
+   var s = fromMatrix(m, m.rows(), Math.pow(ak.EPSILON, 0.75), 30);
    state.v = s.v;
    state.l = s.l;
   };
