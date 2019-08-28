@@ -18,23 +18,25 @@
 
   function toMatrix(v, l) {
    var n = v.length;
-   var m = new Array(n);
+   var mi = new Array(n);
    var i, j, k, vi, vj, s;
-
-   for(i=0;i<n;++i) m[i] = new Array(n);
 
    for(i=0;i<n;++i) {
     vi = v[i];
 
+    for(j=0;j<i;++j) mi[j] = v[j][i];
     for(j=i;j<n;++j) {
      vj = v[j];
 
      s = 0;
      for(k=0;k<n;++k) s += vi[k]*l[k]*vj[k];
-     m[i][j] = m[j][i] = s;
+     mi[j] = s;
     }
+    vi = mi;
+    mi = v[i];
+    v[i] = vi;
    }
-   return ak.matrix(m);
+   return ak.matrix(v);
   }
 
   function jacobi(q, e) {
