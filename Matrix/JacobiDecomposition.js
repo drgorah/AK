@@ -293,7 +293,7 @@
     var i;
 
     for(i=0;i<n;++i) x = Math.max(Math.abs(a[i]), x);
-    return x*Math.abs(e);
+    return x*e;
   }
 
   function fD (f, d)    {return toMatrix(d.v().toArray(), d.lambda().toArray().map(f));}
@@ -305,11 +305,11 @@
    var n = l.length;
    var c, k;
 
-   if(ak.nativeType(e)===ak.UNDEFINED_T) e = 0;
-   else if(isNaN(e)) throw new Error('invalid threshold in ak.jacobiDecomposition stableInv');
+   if(ak.nativeType(e)===ak.UNDEFINED_T)   e = 0;
+   else if(ak.nativeType(e)!==ak.NUMBER_T) throw new Error('invalid threshold in ak.jacobiDecomposition stableInv');
 
-   c = cutoff(l, e);
-   for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<c) ? 0 : 1/l[k];
+   c = cutoff(l, Math.abs(e));
+   for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<=c) ? 0 : 1/l[k];
    return toMatrix(d.v().toArray(), l);
   }
 
@@ -327,10 +327,10 @@
     for(k=0;k<n;++k) l[k] = 1/l[k];
    }
    else {
-    if(isNaN(e)) throw new Error('invalid threshold in ak.jacobiDecomposition stableDiv');
+    if(ak.nativeType(e)!==ak.NUMBER_T) throw new Error('invalid threshold in ak.jacobiDecomposition stableDiv');
 
-    s = cutoff(l, e);
-    for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<s) ? 0 : 1/l[k];
+    s = cutoff(l, Math.abs(e));
+    for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<=s) ? 0 : 1/l[k];
    }
 
    for(i=0;i<c;++i) {
@@ -352,10 +352,10 @@
     for(k=0;k<n;++k) l[k] = r/l[k];
    }
    else {
-    if(isNaN(e)) throw new Error('invalid threshold in ak.jacobiDecomposition stableDiv');
+    if(ak.nativeType(e)!==ak.NUMBER_T) throw new Error('invalid threshold in ak.jacobiDecomposition stableDiv');
 
-    c = cutoff(l, e);
-    for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<c) ? 0 : r/l[k];
+    c = cutoff(l, Math.abs(e));
+    for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<=c) ? 0 : r/l[k];
    }
    return toMatrix(d.v().toArray(), l);
   }
@@ -373,10 +373,10 @@
     for(k=0;k<n;++k) l[k] = 1/l[k];
    }
    else {
-    if(isNaN(e)) throw new Error('invalid threshold in ak.jacobiDecomposition stableDiv');
+    if(ak.nativeType(e)!==ak.NUMBER_T) throw new Error('invalid threshold in ak.jacobiDecomposition stableDiv');
 
-    s = cutoff(l, e);
-    for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<s) ? 0 : 1/l[k];
+    s = cutoff(l, Math.abs(e));
+    for(k=0;k<n;++k) l[k] = (Math.abs(l[k])<=s) ? 0 : 1/l[k];
    }
 
    for(j=0;j<n;++j) {
