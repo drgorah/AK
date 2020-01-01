@@ -41,7 +41,7 @@
   ak.basisFunctionInterpolate = function() {
    var state = {nodes:[], functions:[], weights:[]};
    var arg0  = arguments[0];
-   var interPair, f;
+   var f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
    makeWeights(state);
