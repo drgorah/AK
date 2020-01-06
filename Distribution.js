@@ -10,6 +10,7 @@
 
 (function() {
  var all = [];
+ all.push('Distribution/CauchyDistribution.js');
  all.push('Distribution/CopulaDistribution.js');
  all.push('Distribution/ExponentialDistribution.js');
  all.push('Distribution/FourierDistribution.js');
