@@ -15,6 +15,7 @@
  all.push('Distribution/ExponentialDistribution.js');
  all.push('Distribution/FourierDistribution.js');
  all.push('Distribution/GammaDistribution.js');
+ all.push('Distribution/GeometricDistribution.js');
  all.push('Distribution/GumbelDistribution.js');
  all.push('Distribution/LogNormalDistribution.js');
  all.push('Distribution/MultiNormalDistribution.js');
