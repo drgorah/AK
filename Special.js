@@ -10,6 +10,7 @@
 
 (function() {
  var all = [];
+ all.push('Special/BetaFunction.js');
  all.push('Special/GammaFunction.js');
  ak.using(all);
 })();
