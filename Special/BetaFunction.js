@@ -51,14 +51,14 @@
     if(Math.abs(dn)<BETA_EPS) dn = dn>=0 ? BETA_EPS : -BETA_EPS;
 
     fn *= cn/dn;
-    if(++n===BETA_STEPS) throw new Error('failure to converge in ak.betaI');
+    if(++n===BETA_STEPS) throw new Error('failure to converge in ak.betaP/betaQ');
    }
    while(Math.abs(cn-dn)>=ak.EPSILON*Math.abs(dn));
 
    return fn * (Math.pow(x, a)*Math.pow(1-x, b))/(a*ak.beta(a, b));
   }
 
-  ak.betaI = function(a, b, x) {
+  ak.betaP = function(a, b, x) {
    a = Number(a);
    b = Number(b);
    if(!(a>0) || !(b>0)) return ak.NaN;
@@ -69,6 +69,19 @@
    if(x===1) return 1;
 
    return x<(a+1)/(a+b+2) ? betaFraction(a, b, x) : 1-betaFraction(b, a, 1-x);
+  };
+
+  ak.betaQ = function(a, b, x) {
+   a = Number(a);
+   b = Number(b);
+   if(!(a>0) || !(b>0)) return ak.NaN;
+
+   x = Number(x);
+   if(!(x>=0) || !(x<=1)) return ak.NaN;
+   if(x===0) return 1;
+   if(x===1) return 0;
+
+   return x<(a+1)/(a+b+2) ? 1-betaFraction(a, b, x) : betaFraction(b, a, 1-x);
   };
  }
  ak.using('Special/GammaFunction.js', define);
