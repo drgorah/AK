@@ -13,8 +13,8 @@
   if(ak.beta) return;
 
   function betaR(a, b) {
-   return a>0 && b>0 ? Math.exp(ak.logGamma(a)+ak.logGamma(b)-ak.logGamma(a+b))
-                     : ak.gamma(a)*ak.gamma(b)/ak.gamma(a+b);
+   return a>=0 && b>=0 ? Math.exp(ak.logGamma(a)+ak.logGamma(b)-ak.logGamma(a+b))
+                       : ak.gamma(a)*ak.gamma(b)/ak.gamma(a+b);
   };
 
   function betaC(a, b) {
