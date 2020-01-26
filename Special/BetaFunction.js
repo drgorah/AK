@@ -21,7 +21,7 @@
    return ak.div(ak.mul(ak.gamma(a), ak.gamma(b)), ak.gamma(ak.add(a, b)));
   };
 
-  if(!ak.beta) ak.beta = function(a, b) {return ak.beta[ak.type(a)][ak.type(b)](a, b);};
+  ak.beta = function(a, b) {return ak.beta[ak.type(a)][ak.type(b)](a, b);};
   
   ak.overload(ak.beta, [ak.COMPLEX_T, ak.COMPLEX_T], betaC);
   ak.overload(ak.beta, [ak.COMPLEX_T, ak.NUMBER_T],  betaC);
