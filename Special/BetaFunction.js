@@ -28,7 +28,7 @@
   ak.overload(ak.beta, [ak.NUMBER_T,  ak.COMPLEX_T], betaC);
   ak.overload(ak.beta, [ak.NUMBER_T,  ak.NUMBER_T],  betaR);
 
-  ak.logBeta = function(a, b) {a=Number(a); b=Number(b); return a>0 && b>0 ? ak.logGamma(a)+ak.logGamma(b)-ak.logGamma(a+b) : ak.NaN;};
+  ak.logBeta = function(a, b) {return ak.logGamma(a)+ak.logGamma(b)-ak.logGamma(a+b);};
 
   var BETA_EPS = ak.EPSILON*ak.EPSILON;
   var BETA_STEPS = 10000;
