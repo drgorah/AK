@@ -34,6 +34,7 @@
   var BETA_STEPS = 10000;
 
   function betaFraction(a, b, x) {
+   var scale = a*Math.log(x) + b*Math.log(1-x) - Math.log(a) - ak.logBeta(a, b);
    var n  = 1;
    var an = 1;
    var cn = 1/BETA_EPS;
@@ -55,7 +56,7 @@
    }
    while(Math.abs(cn-dn)>=ak.EPSILON*Math.abs(dn));
 
-   return fn * (Math.pow(x, a)*Math.pow(1-x, b))/(a*ak.beta(a, b));
+   return Math.exp(scale + Math.log(fn));
   }
 
   ak.betaP = function(a, b, x) {
