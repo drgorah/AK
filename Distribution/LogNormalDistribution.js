@@ -41,6 +41,7 @@
    var f = function(){return Math.exp(n());};
    f.mu = n.mu;
    f.sigma = n.sigma;
+   f.rnd = n.rnd;
    return Object.freeze(f);
   };
 
