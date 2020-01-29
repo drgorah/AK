@@ -74,7 +74,7 @@
     else                   b1 = m;
     m = ak.floor(b0/2 + b1/2);
    }
-   return b1;
+   return ak.gammaQ(b0+1,l)<c ? b1 : b0;
   }
 
   ak.poissonInvCDF = function() {
