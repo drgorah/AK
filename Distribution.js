@@ -22,6 +22,7 @@
  all.push('Distribution/LogNormalDistribution.js');
  all.push('Distribution/MultiNormalDistribution.js');
  all.push('Distribution/MultiUniformDistribution.js');
+ all.push('Distribution/NegativeBinomialDistribution.js');
  all.push('Distribution/NormalDistribution.js');
  all.push('Distribution/PoissonDistribution.js');
  all.push('Distribution/SlashDistribution.js');
