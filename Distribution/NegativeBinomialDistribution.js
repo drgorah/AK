@@ -193,7 +193,7 @@
    }
    else
    {
-    grnd = ak.gammaRnd(state.r, (1-state.p)/state.p);
+    grnd = ak.gammaRnd(state.r, (1-state.p)/state.p, state.rnd);
     f = function(){return ak.poissonRnd(grnd())();};
    }
    f.r = function(){return state.r;};
