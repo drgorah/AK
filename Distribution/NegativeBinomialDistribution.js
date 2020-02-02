@@ -181,7 +181,7 @@
     f = function(){return ak.INFINITY;};
    }
    else if(state.r<=4 && state.r===ak.floor(state.r)) {
-    grnd = ak.geometricRnd(state.p, state.rnd);
+    grnd = ak.geometricRnd(1-state.p, state.rnd);
     f = function(){return directRnd(state.r, grnd);};
    }
    else if(state.r*state.p<=8*(1-state.p)) {
