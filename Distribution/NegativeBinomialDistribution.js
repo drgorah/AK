@@ -13,7 +13,7 @@
   if(ak.negativeBinomialPMF) return;
 
   function pmf0(k) {
-   if(k>=0 && k===ak.floor(k)) return k===0 ? 1 : 0;
+   if(k===0) return 1;
    return isNaN(k) ? ak.NaN : 0;
   }
 
