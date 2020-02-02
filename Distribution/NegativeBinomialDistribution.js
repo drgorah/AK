@@ -184,7 +184,7 @@
     grnd = ak.geometricRnd(state.p, state.rnd);
     f = function(){return directRnd(state.r, grnd);};
    }
-   else if(ak.betaP(state.r, 9, 1-state.p)>0.95) {
+   else if(state.r*state.p<=8*(1-state.p)) {
     q = 1-state.p;
     k1 = ak.ceil(state.r*state.p/q);
     p0 = ak.betaP(state.r, 1, q);
