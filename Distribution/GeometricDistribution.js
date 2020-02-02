@@ -57,7 +57,7 @@
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   f = function(k){return k<0 ? 0 : 1-Math.pow(1-state.p, k+1);};
+   f = function(k){return k<0 ? 0 : 1-Math.pow(1-state.p, ak.floor(k)+1);};
    f.p = function(){return state.p;};
    return Object.freeze(f);
   };

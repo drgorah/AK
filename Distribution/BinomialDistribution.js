@@ -55,7 +55,7 @@
   function cdf(n, p, k) {
     if(k<0)  return 0;
     if(k>=n) return 1;
-    return ak.betaQ(k+1, n-k, p);
+    return ak.betaQ(ak.floor(k)+1, n-ak.floor(k), p);
   }
 
   ak.binomialCDF = function() {
