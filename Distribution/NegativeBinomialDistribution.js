@@ -52,6 +52,16 @@
    return Object.freeze(f);
   };
 
+  function cf0(t) {
+   if(isNaN(t)) return ak.complex(ak.NaN, ak.NaN);
+   return ak.complex(1, 0);
+  }
+
+  function cf1(t) {
+   if(isNaN(t)) return ak.complex(ak.NaN, ak.NaN);
+   return t===0 ? ak.complex(1, 0) : ak.complex(0, 0);
+  }
+
   function cf(r, p, t) {
    var pcost = p*Math.cos(t);
    var d = 1+p*p-2*pcost;
@@ -66,7 +76,9 @@
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   f = function(t){return cf(state.r, state.p, t);};
+   if(state.r===0 || state.p===0) f = function(t){return cf0(t);};
+   else if(state.p===1)           f = function(t){return cf1(t);};
+   else                           f = function(t){return cf(state.r, state.p, t);};
    f.r = function(){return state.r;};
    f.p = function(){return state.p;};
    return Object.freeze(f);
