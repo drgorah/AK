@@ -199,7 +199,7 @@
    constructors[ak.NUMBER_T][ak.NUMBER_T][ak.nativeType(arg2)](state, arg2, args);
 
    state.p = Number(p);
-   if(state.p<0 || state.p>1 || !isFinite(state.p)) throw new Error('invalid p in ak.binomial distribution');
+   if(!(state.p>0 && state.p<1)) throw new Error('invalid p in ak.binomial distribution');
   };
 
   constructors[ak.NUMBER_T][ak.NUMBER_T][ak.UNDEFINED_T] = function(state) {

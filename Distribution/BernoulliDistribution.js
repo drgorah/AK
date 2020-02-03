@@ -87,7 +87,7 @@
    constructors[ak.NUMBER_T][ak.nativeType(arg1)](state, arg1, args);
 
    state.p = Number(p);
-   if(state.p<0 || state.p>1 || !isFinite(state.p)) throw new Error('invalid p in ak.bernoulli distribution');
+   if(!(state.p>0 && state.p<1)) throw new Error('invalid p in ak.bernoulli distribution');
   };
 
   constructors[ak.NUMBER_T][ak.UNDEFINED_T] = function(state) {
