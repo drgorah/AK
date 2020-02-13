@@ -63,11 +63,11 @@
   ak.bernoulliRnd = function() {
    var state = {p: 0.5, rnd: Math.random};
    var arg0  = arguments[0];
-   var km, cm, prnd, ppmf, bpmf, lambda, l, u, c, f;
+   var f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   f = function() {return state.rnd()<=state.p ? 1 : 0;}
+   f = function() {return state.rnd()<state.p ? 1 : 0;}
    f.p = function(){return state.p;};
    f.rnd = function(){return state.rnd;};
    return Object.freeze(f);
