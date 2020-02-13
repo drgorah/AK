@@ -19,7 +19,7 @@
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   f = function(k) {if(k===0) return 1-state.p; if(k===1) return state.p; return isNaN(k) ? ak.NaN : 0};
+   f = function(k) {if(k===0) return 1-state.p; if(k===1) return state.p; return isNaN(k) ? ak.NaN : 0;};
    f.p = function(){return state.p;};
    return Object.freeze(f);
   };
@@ -31,7 +31,7 @@
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   f = function(t) {return ak.complex(1-state.p+state.p*Math.cos(t), state.p*Math.sin(t))};
+   f = function(t) {return ak.complex(1-state.p+state.p*Math.cos(t), state.p*Math.sin(t));};
    f.p = function(){return state.p;};
    return Object.freeze(f);
   };
