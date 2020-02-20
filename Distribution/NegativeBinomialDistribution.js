@@ -12,32 +12,32 @@
  function define() {
   if(ak.negativeBinomialPMF) return;
 
-  function pmf(r, p, lnp, rlnq, lnr, k) {
-   if(k>=0 && k===ak.floor(k)) return Math.exp(k*lnp + rlnq + ak.logGamma(k+r) - lnr - ak.logGamma(k+1));
+  function pmf(r, lnq, rlnp, rfac, k) {
+   if(k>=0 && k===ak.floor(k)) return Math.exp(k*lnq + rlnp + ak.logGamma(k+r) - ak.logGamma(k+1) - rfac);
    return isNaN(k) ? ak.NaN : 0;
   }
 
   ak.negativeBinomialPMF = function() {
    var state = {r: 1, p: 0.5};
    var arg0  = arguments[0];
-   var lnp, rlnq, lnr, f;
+   var lnq, rlnp, rfac, f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   lnp = Math.log(state.p);
-   rlnq = state.r*Math.log(1-state.p);
-   lnr = ak.logGamma(state.r);
+   lnq = Math.log(1-state.p);
+   rlnp = state.r*Math.log(state.p);
+   rfac = ak.logGamma(state.r);
 
-   f = function(k){return pmf(state.r, state.p, lnp, rlnq, lnr, k);};
+   f = function(k){return pmf(state.r, lnq, rlnp, rfac, k);};
    f.r = function(){return state.r;};
    f.p = function(){return state.p;};
    return Object.freeze(f);
   };
 
-  function cf(r, p, t) {
-   var pcost = p*Math.cos(t);
-   var d = 1+p*p-2*pcost;
-   var z = ak.complex((1-p)*(1-pcost)/d, (1-p)*p*Math.sin(t)/d);
+  function cf(r, p, q, t) {
+   var qcost = q*Math.cos(t);
+   var d = 1+q*q-2*qcost;
+   var z = ak.complex(p*(1-qcost)/d, p*q*Math.sin(t)/d);
    return ak.pow(z, r);
   }
 
@@ -48,14 +48,14 @@
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   f = function(t){return cf(state.r, state.p, t);};
+   f = function(t){return cf(state.r, state.p, 1-state.p, t);};
    f.r = function(){return state.r;};
    f.p = function(){return state.p;};
    return Object.freeze(f);
   };
 
   function cdf(r, p, k) {
-   if(k>=0) return ak.betaP(r, ak.floor(k)+1, 1-p);
+   if(k>=0) return ak.betaP(r, ak.floor(k)+1, p);
    return isNaN(k) ? ak.NaN : 0;
   }
 
@@ -72,7 +72,7 @@
    return Object.freeze(f);
   };
 
-  function invCDF(r, q, k1, p0, p1, c) {
+  function invCDF(r, p, k1, p0, p1, c) {
    var k0 = 0;
    var m;
 
@@ -83,31 +83,30 @@
    while(p1<c) {
     k0 = k1;
     k1 *= 2;
-    p1 = ak.betaP(r, k1+1, q);
+    p1 = ak.betaP(r, k1+1, p);
    }
    m = ak.floor(k0/2 + k1/2);
 
    while(m!==k0 && m!==k1) {
-    if(ak.betaP(r, m+1, q)<c) k0 = m;
+    if(ak.betaP(r, m+1, p)<c) k0 = m;
     else                      k1 = m;
     m = ak.floor(k0/2 + k1/2);
    }
-   return ak.betaP(r, k0+1, q)<c ? k1 : k0;
+   return ak.betaP(r, k0+1, p)<c ? k1 : k0;
   }
 
   ak.negativeBinomialInvCDF = function() {
    var state = {r: 1, p: 0.5};
    var arg0  = arguments[0];
-   var q, k1, p0, p1, f;
+   var k1, p0, p1, f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   q = 1-state.p;
-   k1 = ak.ceil(state.r*state.p/q);
-   p0 = ak.betaP(state.r, 1, q);
-   p1 = ak.betaP(state.r, k1+1, q);
+   k1 = ak.ceil(state.r*(1-state.p)/state.p);
+   p0 = ak.betaP(state.r, 1, state.p);
+   p1 = ak.betaP(state.r, k1+1, state.p);
 
-   f = function(c){return invCDF(state.r, q, k1, p0, p1, c);};
+   f = function(c){return invCDF(state.r, state.p, k1, p0, p1, c);};
    f.r = function(){return state.r;};
    f.p = function(){return state.p;};
    return Object.freeze(f);
@@ -124,24 +123,23 @@
   ak.negativeBinomialRnd = function() {
    var state = {r: 1, p: 0.5, rnd: Math.random};
    var arg0  = arguments[0];
-   var grnd, q, k1, p0, p1, f;
+   var grnd, k1, p0, p1, f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
    if(state.r<=4 && state.r===ak.floor(state.r)) {
-    grnd = ak.geometricRnd(1-state.p, state.rnd);
+    grnd = ak.geometricRnd(state.p, state.rnd);
     f = function(){return directRnd(state.r, grnd);};
    }
-   else if(state.r*state.p<=8*(1-state.p)) {
-    q = 1-state.p;
-    k1 = ak.ceil(state.r*state.p/q);
-    p0 = ak.betaP(state.r, 1, q);
-    p1 = ak.betaP(state.r, k1+1, q);
-    f = function(c){return invCDF(state.r, q, k1, p0, p1, state.rnd());};
+   else if(state.r*(1-state.p)<=8*state.p) {
+    k1 = ak.ceil(state.r*(1-state.p)/state.p);
+    p0 = ak.betaP(state.r, 1, state.p);
+    p1 = ak.betaP(state.r, k1+1, state.p);
+    f = function(c){return invCDF(state.r, state.p, k1, p0, p1, state.rnd());};
    }
    else
    {
-    grnd = ak.gammaRnd(state.r, (1-state.p)/state.p, state.rnd);
+    grnd = ak.gammaRnd(state.r, state.p/(1-state.p), state.rnd);
     f = function(){return ak.poissonRnd(grnd())();};
    }
    f.r = function(){return state.r;};
@@ -179,7 +177,7 @@
    constructors[ak.NUMBER_T][ak.NUMBER_T][ak.nativeType(arg2)](state, arg2, args);
 
    state.p = Number(p);
-   if(!(state.p>0 && state.p<1)) throw new Error('invalid p in ak.negativeBinomial distribution');
+   if(!(p>0 && p<1)) throw new Error('invalid p in ak.negativeBinomial distribution');
   };
 
   constructors[ak.NUMBER_T][ak.NUMBER_T][ak.UNDEFINED_T] = function(state) {
