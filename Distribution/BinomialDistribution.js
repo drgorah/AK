@@ -113,17 +113,42 @@
    return k;
   }
 
-  function rejectRnd(n, prnd, ppmf, bpmf, c, rnd) {
-   var k;
-   do {k = prnd();}
-   while(k>n || bpmf(k)<rnd()*c*ppmf(k));
-   return k;
+  function rejectRatio(n, p) {
+   var logn = Math.log(n);
+   var logq = Math.log(1-p);
+   var lognum = ak.logGamma(n+1) + n*logq + n*p;
+
+   return function(k) {
+    var logden = k*logq + ak.logGamma(n-k+1) + k*logn;
+    return Math.exp(lognum-logden);
+   };
+  }
+
+  function rejectRnd(n, p, rnd) {
+   var lambda = n*p;
+   var prnd = ak.poissonRnd(lambda, rnd);
+   var ratio = rejectRatio(n, p);
+   var k0 = ak.floor(lambda);
+   var k1 = k0+1;
+   var r0 = ratio(k0);
+   var r1 = ratio(k1);
+   var c;
+   if(r0>r1) {while(k0>0 && r0>r1) {k1=k0;r1=r0;r0=ratio(--k0);}}
+   else      {while(k1<n && r0<r1) {k0=k1;r0=r1;r1=ratio(++k1);}}
+   c = Math.max(r0, r1);
+
+   return function() {
+    var k;
+    do {k=prnd();}
+    while(k>n || c*rnd()>=ratio(k));
+    return k;
+   };
   }
 
   ak.binomialRnd = function() {
    var state = {n: 1, p: 0.5, rnd: Math.random};
    var arg0  = arguments[0];
-   var km, cm, prnd, ppmf, bpmf, lambda, l, u, c, f;
+   var km, cm, f, g;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
@@ -135,33 +160,12 @@
     cm = ak.betaQ(km+1, state.n-km, state.p);
     f = function() {return invCDF(state.n, state.p, km, cm, state.rnd());};
    }
-   else if(state.p<0.5) {
-    lambda = state.n*state.p;
-    prnd = ak.poissonRnd(lambda, state.rnd);
-    ppmf = ak.poissonPMF(lambda);
-    bpmf = ak.binomialPMF(state.n, state.p);
-    c = 0;
-    l = ak.ceil(lambda)-1;
-    u = ak.ceil(lambda+state.p)-1;
-    while(l<=u) {
-     c = Math.max(c, bpmf(l)/ppmf(l));
-     ++l;
-    }
-    f = function() {return rejectRnd(state.n, prnd, ppmf, bpmf, c, state.rnd);};
+   else if(state.p<=0.5) {
+    f = rejectRnd(state.n, state.p, state.rnd);
    }
    else {
-    lambda = state.n*(1-state.p);
-    prnd = ak.poissonRnd(lambda, state.rnd);
-    ppmf = ak.poissonPMF(lambda);
-    bpmf = ak.binomialPMF(state.n, 1-state.p);
-    c = 0;
-    l = ak.ceil(lambda)-1;
-    u = ak.ceil(lambda+1-state.p)-1;
-    while(l<=u) {
-     c = Math.max(c, bpmf(l)/ppmf(l));
-     ++l;
-    }
-    f = function() {return state.n-rejectRnd(state.n, prnd, ppmf, bpmf, c, state.rnd);};
+    g = rejectRnd(state.n, 1-state.p, state.rnd);
+    f = function() {return state.n-g();};
    }
 
    f.n = function(){return state.n;};
