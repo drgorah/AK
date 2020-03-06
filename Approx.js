@@ -12,6 +12,7 @@
  var all = [];
  all.push('Approx/BasisFunctionInterpolate.js');
  all.push('Approx/CubicSplineInterpolate.js');
+ all.push('Approx/KernelSmooth.js');
  all.push('Approx/LinearInterpolate.js');
  all.push('Approx/LinearRegression.js');
  all.push('Approx/MonoCubicSplineInterpolate.js');
