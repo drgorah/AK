@@ -30,17 +30,16 @@
 
    f = function(x) {
     var n = state.nodes.length;
-    var w = state.kernel(ak.sub(state.nodes[0].x, x));
-    var y0 = ak.mul(w, state.nodes[0].y);
-    var y1 = w;
-    var i;
+    var y0 = 0;
+    var y1 = 0;
+    var w;
 
-    for(i=1;i<n;++i) {
-     w = state.kernel(ak.sub(state.nodes[i].x, x));
-     y0 = ak.add(y0, ak.mul(w, state.nodes[i].y));
+    while(n-->0) {
+     w = state.kernel(state.nodes[n].x, x);
+     y0 += w * state.nodes[n].y;
      y1 += w;
     }
-    return ak.div(y0, y1);
+    return y0/y1;
    };
    f.nodes = function() {return copyNodes(state.nodes);};
    f.kernel = function() {return state.kernel;};
