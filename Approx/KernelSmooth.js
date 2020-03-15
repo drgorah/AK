@@ -35,7 +35,7 @@
     var w;
 
     while(n-->0) {
-     w = state.kernel(state.nodes[n].x, x);
+     w = state.kernel(x, state.nodes[n].x);
      y0 += w * state.nodes[n].y;
      y1 += w;
     }
