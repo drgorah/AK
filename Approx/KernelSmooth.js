@@ -60,12 +60,17 @@
 
   constructors[ak.ARRAY_T][ak.ARRAY_T][ak.FUNCTION_T] = function(state, x, y, f) {
    var n = x.length;
-   var i;
+   var i, xi, yi;
 
    if(y.length!==n) throw new Error('size mismatch in ak.kernelSmooth');
 
    state.nodes.length = n;
-   for(i=0;i<n;++i) state.nodes[i] = {x:x[i], y:y[i]};
+   for(i=0;i<n;++i) {
+    xi = x[i];
+    yi = Number(y[i]);
+    if(!isFinite(yi)) throw new Error('invalid node value in ak.kernelSmooth');
+    state.nodes[i] = {x:xi, y:yi};
+   }
 
    state.kernel = f;
   };
@@ -79,6 +84,8 @@
    for(i=0;i<n;++i) {
     x = nodes[i].x; if(ak.nativeType(x)===ak.FUNCTION_T) x = x();
     y = nodes[i].y; if(ak.nativeType(y)===ak.FUNCTION_T) y = y();
+    y = Number(y);
+    if(!isFinite(y)) throw new Error('invalid node value in ak.kernelSmooth');
     state.nodes[i] = {x:x, y:y};
    }
 
