@@ -12,6 +12,7 @@
  var all = [];
  all.push('Invert/BracketInverse.js');
  all.push('Invert/BisectInverse.js');
+ all.push('Invert/LevenbergInverse.js');
  all.push('Invert/NewtonInverse.js');
  all.push('Invert/SecantInverse.js');
  ak.using(all);
