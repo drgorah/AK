@@ -12,7 +12,7 @@
  function define() {
   if(ak.levenbergInverse) return;
 
-  function delta(state, lambda, threshold) {
+  function delta(state, lambda, threshold, steps) {
    var dftdf = state.dftdf;
    var n = dftdf.length;
    var a = new Array(n);
@@ -23,7 +23,7 @@
     a[i][i] += lambda;
    }
    a = ak.matrix(a);
-   a = ak.spectralDecomposition(a);
+   a = ak.spectralDecomposition(a, threshold, steps);
    state.dx = ak.stableDiv(state.dftdy, a, threshold);
   }
 
@@ -52,7 +52,7 @@
 
    lambda = state.lambda*rhom;
    if(lambda===0) lambda = state.lambda;
-   delta(state, lambda, threshold);
+   delta(state, lambda, threshold, steps);
 
    x1 = ak.sub(state.x, state.dx);
    y1 = f(x1);
@@ -62,7 +62,7 @@
     if(k===steps) throw new Error('failure to converge in ak.levenbergInverse');
 
     lambda = state.lambda*Math.pow(rhop, k++);
-    delta(state, lambda, threshold);
+    delta(state, lambda, threshold, steps);
 
     x1 = ak.sub(state.x, state.dx);
     y1 = f(x1);
@@ -125,7 +125,7 @@
 
    lambda = state.lambda*rhom;
    if(lambda===0) lambda = state.lambda;
-   delta(state, lambda, threshold);
+   delta(state, lambda, threshold, steps);
 
    x1 = ak.sub(state.x, state.dx);
    y1 = f(x1);
@@ -135,7 +135,7 @@
     if(k===steps) throw new Error('failure to converge in ak.levenbergInverse');
 
     lambda = state.lambda*Math.pow(rhop, k++);
-    delta(state, lambda, threshold);
+    delta(state, lambda, threshold, steps);
 
     x1 = ak.sub(state.x, state.dx);
     y1 = f(x1);
