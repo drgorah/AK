@@ -51,13 +51,14 @@
    scalarSquare(state);
 
    lambda = state.lambda*rhom;
+   if(lambda===0) lambda = state.lambda;
    delta(state, lambda, threshold);
 
    x1 = ak.sub(state.x, state.dx);
    y1 = f(x1);
    ady = ak.diff(y1, y);
 
-   while(ady>state.ady && lambda>0) {
+   while(ady>state.ady) {
     if(k===steps) throw new Error('failure to converge in ak.levenbergInverse');
 
     lambda = state.lambda*Math.pow(rhop, k++);
@@ -123,13 +124,14 @@
    vectorSquare(state);
 
    lambda = state.lambda*rhom;
+   if(lambda===0) lambda = state.lambda;
    delta(state, lambda, threshold);
 
    x1 = ak.sub(state.x, state.dx);
    y1 = f(x1);
    ady = ak.diff(y1, y);
 
-   while(ady>state.ady && lambda>0) {
+   while(ady>state.ady) {
     if(k===steps) throw new Error('failure to converge in ak.levenbergInverse');
 
     lambda = state.lambda*Math.pow(rhop, k++);
@@ -181,8 +183,8 @@
    if(ak.nativeType(df)!==ak.FUNCTION_T) throw new Error('invalid derivative in ak.levenbergInverse');
 
    if(ak.nativeType(lambda)!==ak.NUMBER_T || lambda<=0 || !isFinite(lambda))  throw new Error('invalid lambda in ak.levenbergInverse');
-   if(ak.nativeType(rhom)!==ak.NUMBER_T || !(rhom>0 && rhom<=1))      throw new Error('invalid rho- in ak.levenbergInverse');
-   if(ak.nativeType(rhop)!==ak.NUMBER_T || rhop<1 || !isFinite(rhop)) throw new Error('invalid rho+ in ak.levenbergInverse');
+   if(ak.nativeType(rhom)!==ak.NUMBER_T || !(rhom>0 && rhom<1))        throw new Error('invalid rho- in ak.levenbergInverse');
+   if(ak.nativeType(rhop)!==ak.NUMBER_T || rhop<=1 || !isFinite(rhop)) throw new Error('invalid rho+ in ak.levenbergInverse');
 
    threshold = ak.nativeType(threshold)===ak.UNDEFINED_T ? Math.pow(ak.EPSILON, 0.75) : Math.abs(threshold);
    if(isNaN(threshold)) throw new Error('invalid convergence threshold in ak.levenbergInverse');
