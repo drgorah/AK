@@ -93,7 +93,7 @@
     scalarStep(f, df, y, state, rhom, rhop, threshold, steps);
    }
    while(state.ady>threshold && state.adx>threshold*nx);
-   return state.x;
+   return !isNaN(state.y) ? state.x : ak.vector(nx, ak.NaN);
   }
 
   function vectorSquare(state) {
@@ -166,6 +166,7 @@
     vectorStep(f, df, y, state, rhom, rhop, threshold, steps);
    }
    while(state.ady>threshold*ny && state.adx>threshold*nx);
+   for(i=0;i<ny;++i) if(isNaN(state.y.at(i))) return ak.vector(nx, ak.NaN);
    return state.x;
   }
 
