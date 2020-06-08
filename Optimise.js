@@ -16,5 +16,6 @@
  all.push('Optimise/GeneticMinimum.js');
  all.push('Optimise/GoldenMinimum.js');
  all.push('Optimise/PolytopeMinimum.js');
+ all.push('Optimise/WolfeLineSearch.js');
  ak.using(all);
 })();
