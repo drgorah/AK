@@ -68,10 +68,10 @@
    var xdx = ak.add(x, dx);
    var fxdx, dfxdx;
 
-   fxdx = f(xdx)
+   fxdx = f(xdx);
    if(!armijo(c1, fx, dxdfx, 1, fxdx)) return bracketLeft(x, dx, fx, dfx, dxdfx, f, df, c1, c2, steps);
 
-   dfxdx = df(xdx)
+   dfxdx = df(xdx);
    if(!curvature(c2, dx, dxdfx, dfxdx)) return bracketRight(x, dx, fx, dfx, dxdfx, fxdx, f, df, c1, c2, steps);
 
    return {x:xdx, fx:fxdx, dfx:dfxdx, passed:true};
