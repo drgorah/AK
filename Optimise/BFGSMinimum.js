@@ -17,7 +17,7 @@
    var h1 = h.toArray();
    var dxy = ak.mul(dx, y);
    var yhy = 0;
-   var i, j, k, yi, h1i, c, cdxi, dxj, hydx;
+   var i, j, k, yi, h1i, c, dxi, cdxi, dxj, hydx;
 
    for(i=0;i<n;++i) {
     yi = y.at(i);
@@ -27,17 +27,21 @@
    c = (dxy+yhy)/(dxy*dxy);
 
    for(i=0;i<n;++i) {
-    cdxi = c*dx.at(i);
+    dxi = dx.at(i);
+    cdxi = c*dxi;
     h1i = h1[i];
+
+    for(j=0;j<i;++j) h1[j][i] = h1i[j] += cdxi*dx.at(j);
+    h1i[i] += cdxi*dxi;
+
     for(j=0;j<n;++j) {
      dxj = dx.at(j);
-     h1i[j] += cdxi*dxj;
 
      hydx = 0;
      for(k=0;k<n;++k) hydx += h.at(i,k)*y.at(k)*dxj;
      hydx /= dxy;
 
-     h1i[j] -= hydx;
+     h1i[j]   -= hydx;
      h1[j][i] -= hydx;
     }
    }
