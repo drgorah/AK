@@ -1,4 +1,4 @@
-//AK/Optimise/BFGSMinimum.js
+//AK/Optimise/QuasiNewtonMinimum.js
 
 //Copyright Richard Harris 2020.
 //Distributed under the Boost Software License, Version 1.0.
@@ -10,7 +10,7 @@
 
 (function() {
  function define() {
-  if(ak.bfgsMinimum) return;
+  if(ak.quasiNewtonMinimum) return;
 
   function update(h, dx, y) {
    var n = dx.dims();
@@ -51,7 +51,7 @@
   function minimum(f, df, x, wolfe, threshold, steps) {
    var fx, dfx, adx, adfx, eps, h, y, dx, adx, adfx, eps, stop;
 
-   if(ak.type(x)!==ak.VECTOR_T || x.dims()===0) throw new Error('invalid starting point in ak.bfgsMinimum');
+   if(ak.type(x)!==ak.VECTOR_T || x.dims()===0) throw new Error('invalid starting point in ak.quasiNewtonMinimum');
 
    fx = f(x);
    dfx = df(x);
@@ -72,7 +72,7 @@
     eps = threshold*(1+ak.abs(x));
     stop = isNaN(fx) || !(adx>eps && adfx>eps);
     if(!stop) {
-     if(--steps===0) throw new Error('failure to converge in ak.bfgsMinimum');
+     if(--steps===0) throw new Error('failure to converge in ak.quasiNewtonMinimum');
      h = update(h, dx, ak.sub(y.dfx, dfx));
      dfx = y.dfx;
     }
@@ -82,23 +82,23 @@
    return !isNaN(fx) && !isNaN(adx) && !isNaN(adfx) ? x : ak.vector(x.dims(), ak.NaN);
   }
 
-  ak.bfgsMinimum = function(f, df, c1, c2, threshold, steps) {
+  ak.quasiNewtonMinimum = function(f, df, c1, c2, threshold, steps) {
    var wolfe;
 
-   if(ak.nativeType(f)!==ak.FUNCTION_T) throw new Error('invalid function in ak.bfgsMinimum');
-   if(ak.nativeType(df)!==ak.FUNCTION_T) throw new Error('invalid derivative in ak.bfgsMinimum');
+   if(ak.nativeType(f)!==ak.FUNCTION_T) throw new Error('invalid function in ak.quasiNewtonMinimum');
+   if(ak.nativeType(df)!==ak.FUNCTION_T) throw new Error('invalid derivative in ak.quasiNewtonMinimum');
 
    c1 = ak.nativeType(c1)===ak.UNDEFINED_T ? 1.0e-4 : Number(c1);
-   if(!(c1>0 && c1<1)) throw new Error('invalid armijo constant in ak.bfgsMinimum');
+   if(!(c1>0 && c1<1)) throw new Error('invalid armijo constant in ak.quasiNewtonMinimum');
 
    c2 = ak.nativeType(c2)===ak.UNDEFINED_T ? 0.9 : Number(c2);
-   if(!(c2>c1 && c2<1)) throw new Error('invalid curvature constant in ak.bfgsMinimum');
+   if(!(c2>c1 && c2<1)) throw new Error('invalid curvature constant in ak.quasiNewtonMinimum');
 
    threshold = ak.nativeType(threshold)===ak.UNDEFINED_T ? Math.pow(ak.EPSILON, 0.75) : Math.abs(threshold);
-   if(isNaN(threshold)) throw new Error('invalid convergence threshold in ak.bfgsMinimum');
+   if(isNaN(threshold)) throw new Error('invalid convergence threshold in ak.quasiNewtonMinimum');
 
    steps = ak.nativeType(steps)===ak.UNDEFINED_T ? 1000 : ak.floor(steps);
-   if(!(steps>0)) throw new Error('invalid steps in ak.bfgsMinimum');
+   if(!(steps>0)) throw new Error('invalid steps in ak.quasiNewtonMinimum');
 
    wolfe = ak.wolfeLineSearch(f, df, c1, c2, steps);
    return function(x) {return minimum(f, df, x, wolfe, threshold, steps);};
