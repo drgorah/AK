@@ -11,7 +11,7 @@
 (function() {
  var all = [];
  all.push('Optimise/AnnealMinimum.js');
-  all.push('Optimise/BisectMinimum.js');
+ all.push('Optimise/BisectMinimum.js');
  all.push('Optimise/BlindfoldMinimum.js');
  all.push('Optimise/GeneticMinimum.js');
  all.push('Optimise/GoldenMinimum.js');
