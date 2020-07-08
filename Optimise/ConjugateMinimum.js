@@ -12,8 +12,16 @@
  function define() {
   if(ak.conjugateMinimum) return;
 
+  function update(r, b, v, n) {
+   var i;
+
+   r = r.toArray();
+   for(i=0;i<n;++i) r[i] += b*v.at(i);
+   return ak.vector(r);
+  }
+
   function minimum(f, df, x, wolfe, threshold, steps) {
-   var n, fx, dfx, adx, adfx, eps, h, y, dx, adx, adfx, eps, r0, r1, v, d, b, stop;
+   var n, fx, dfx, adx, adfx, eps, h, y, dx, adx, adfx, eps, r0, r1, r02, r12, v, d, b, stop;
 
    if(ak.type(x)!==ak.VECTOR_T || x.dims()===0) throw new Error('invalid starting point in ak.conjugateMinimum');
 
@@ -25,6 +33,7 @@
    if(isNaN(fx) || !(adfx>eps)) return !isNaN(fx) && !isNaN(adfx) ? x : ak.vector(n, ak.NaN);
 
    r0 = ak.neg(dfx);
+   r02 = adfx*adfx;
    v = r0;
    d = x.dims();
 
@@ -41,11 +50,13 @@
     if(!stop) {
      if(--steps===0) throw new Error('failure to converge in ak.conjugateMinimum');
      r1 = ak.neg(y.dfx);
+     r12 = adfx*adfx;
      d = (d+1)%n;
-     b = d!==0 ? Math.max(0, (ak.mul(r1, r1)-ak.mul(r1, r0))/ak.mul(r0, r0)) : 0;
-     v = b!==0 ? ak.add(r1, ak.mul(b, v)) : r1;
+     b = d!==0 ? Math.max(0, (r12-ak.mul(r1, r0))/r02) : 0;
+     v = b!==0 ? update(r1, b, v, n) : r1;
      dfx = y.dfx;
      r0 = r1;
+     r02 = r12;
      if(b===0) d = 0;
     }
    }
