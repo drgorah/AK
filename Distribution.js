@@ -20,6 +20,7 @@
  all.push('Distribution/GeometricDistribution.js');
  all.push('Distribution/GumbelDistribution.js');
  all.push('Distribution/LogNormalDistribution.js');
+ all.push('Distribution/MixtureDistribution.js');
  all.push('Distribution/MultiNormalDistribution.js');
  all.push('Distribution/MultiUniformDistribution.js');
  all.push('Distribution/NegativeBinomialDistribution.js');
