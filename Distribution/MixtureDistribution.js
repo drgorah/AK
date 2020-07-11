@@ -29,6 +29,24 @@
    return Object.freeze(f);
   };
 
+  function pmf(pmfs, weights, sum, k) {
+   var n = pmfs.length;
+   var p = 0;
+   var i;
+
+   if(k!==ak.floor(k)) return isNaN(k) ? ak.NaN : 0;
+   for(i=0;i<n;++i) p += weights[i] * pmfs[i](k);
+   return Math.max(p/sum, 0);
+  }
+
+  ak.mixturePMF = function(pmfs, weights) {
+   var state = constructor(pmfs, weights);
+   var f = function(k) {return pmf(state.dists, state.weights, state.sum, k);};
+   f.pmfs = function() {return state.dists.slice(0);};
+   f.weights = function() {return state.weights.slice(0);};
+   return Object.freeze(f);
+  };
+
   function cf(cfs, weights, sum, t) {
    var n = cfs.length;
    var z = ak.complex(0);
