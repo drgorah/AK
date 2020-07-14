@@ -159,7 +159,7 @@
 
    for(i=0;i<n;++i) {
     if(ak.nativeType(dists[i])!==ak.FUNCTION_T) throw new Error('invalid distribution in ak.mixture distribution');
-    if(!(weights[i]>0)) throw new Error('invalid weight in ak.mixture distribution');
+    if(!(ak.nativeType(weights[i])===ak.NUMBER_T && weights[i]>0)) throw new Error('invalid weight in ak.mixture distribution');
     sum += weights[i];
    }
    if(!isFinite(sum)) throw new Error('non-finite weights in ak.mixture distribution');
