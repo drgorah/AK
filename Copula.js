@@ -13,6 +13,7 @@
  all.push('Copula/AliCopula.js');
  all.push('Copula/ArchimedeanCopula.js');
  all.push('Copula/BarnettCopula.js');
+ all.push('Copula/BlendCopula.js');
  all.push('Copula/ClaytonCopula.js');
  all.push('Copula/FrankCopula.js');
  all.push('Copula/GaussianCopula.js');
