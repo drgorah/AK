@@ -18,7 +18,7 @@
 
   ak.blendCopulaElement = function(copula, ids, weights) {
    var e = new BlendCopulaElement();
-   var n, i;
+   var n, sorted, i;
 
    if(ak.nativeType(copula)!==ak.FUNCTION_T) throw new Error('invalid copula in ak.blendCopulaElement');
    if(ak.nativeType(ids)!==ak.ARRAY_T) throw new Error('invalid argument ids in ak.blendCopulaElement');
@@ -29,8 +29,13 @@
 
    for(i=0;i<n;++i) {
     if(!(ids[i]>=0 && ids[i]!==ak.INFINITY && ak.floor(ids[i])===ids[i])) throw new Error('invalid argument id in ak.blendCopulaElement');
-    if(i>0 && ids[i]<=ids[i-1]) throw new Error('non-increasing argument ids in ak.blendCopulaElement');
     if(!(ak.nativeType(weights[i])===ak.NUMBER_T && weights[i]>0 && weights[i]!==ak.INFINITY)) throw new Error('invalid argument weight in ak.blendCopulaElement');
+   }
+
+   sorted = ids.slice(0);
+   sorted.sort(function(x, y){return x-y;});
+   for(i=1;i<n;++i) {
+    if(sorted[i]===sorted[i-1]) throw new Error('duplicate argument ids in ak.blendCopulaElement');
    }
 
    ids = ids.slice(0);
