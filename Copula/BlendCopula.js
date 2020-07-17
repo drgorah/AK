@@ -36,7 +36,7 @@
    sorted.sort(function(x, y){return x-y;});
    for(i=1;i<n && sorted[i]!==sorted[i-1];++i);
    if(i<n) throw new Error('duplicate argument ids in ak.blendCopulaElement');
-   max = sorted[n-1];
+   max = n>0 ? sorted[n-1] : -1;
 
    ids = ids.slice(0);
    weights = weights.slice(0);
@@ -116,7 +116,7 @@
   };
 
   function constructor(elements) {
-   var max = 0;
+   var max = -1;
    var n, i, j, element, sum;
 
    if(ak.nativeType(elements)!==ak.ARRAY_T) throw new Error('invalid elements in ak.blendCopula');
