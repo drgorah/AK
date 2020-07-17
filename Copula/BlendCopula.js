@@ -34,9 +34,8 @@
 
    sorted = ids.slice(0);
    sorted.sort(function(x, y){return x-y;});
-   for(i=1;i<n;++i) {
-    if(sorted[i]===sorted[i-1]) throw new Error('duplicate argument ids in ak.blendCopulaElement');
-   }
+   for(i=1;i<n && sorted[i]!==sorted[i-1];++i);
+   if(i<n) throw new Error('duplicate argument ids in ak.blendCopulaElement');
 
    ids = ids.slice(0);
    weights = weights.slice(0);
