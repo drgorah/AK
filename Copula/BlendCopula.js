@@ -98,7 +98,7 @@
    if(ak.nativeType(delta)===ak.UNDEFINED_T)   delta = 0.5*Math.pow(n*ak.EPSILON, 1/(n+2));
    else if(ak.nativeType(delta)!==ak.NUMBER_T) throw new Error('non-numeric delta in ak.blendCopulaDensity');
 
-   if(delta<=0) throw new Error('non-positive delta in ak.blendCopulaDensity');
+   if(!(delta>0)) throw new Error('non-positive delta in ak.blendCopulaDensity');
 
    f = function(u) {
     if(ak.type(u)!==ak.VECTOR_T) throw new Error('invalid argument in ak.blendCopulaDensity');
