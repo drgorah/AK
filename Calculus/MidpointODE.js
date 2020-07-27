@@ -12,7 +12,7 @@
  function define() {
   if(ak.midpointODE) return;
 
-  function numbermidpointODE(f, n, x0, x1, y0) {
+  function numberMidpointODE(f, n, x0, x1, y0) {
    var dx = (x1-x0)/n;
    var dx2 = dx/2;
    var i;
@@ -24,7 +24,7 @@
    return y0;
   }
 
-  function generalmidpointODE(f, n, x0, x1, y0) {
+  function generalMidpointODE(f, n, x0, x1, y0) {
    var dx = (x1-x0)/n;
    var dx2 = dx/2;
    var i;
@@ -47,7 +47,7 @@
     n = ak.ceil(Math.abs(x1-x0)/dx);
     if(n>ak.INT_MAX) throw new Error('too many steps in ak.midpointODE');
     if(n===0) n = 1;
-    return ak.nativeType(y0)===ak.NUMBER_T ? numbermidpointODE(f, n, x0, x1, y0) : generalmidpointODE(f, n, x0, x1, y0);
+    return ak.nativeType(y0)===ak.NUMBER_T ? numberMidpointODE(f, n, x0, x1, y0) : generalMidpointODE(f, n, x0, x1, y0);
    };
   };
  }
