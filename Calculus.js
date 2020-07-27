@@ -12,6 +12,7 @@
  var all = [];
  all.push('Calculus/EulerODE.js');
  all.push('Calculus/FiniteDifference.js');
+ all.push('Calculus/MidpointODE.js');
  all.push('Calculus/MonteCarloIntegral.js');
  all.push('Calculus/NestedIntegral.js');
  all.push('Calculus/PolynomialDerivative.js');
