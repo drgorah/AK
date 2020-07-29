@@ -19,6 +19,7 @@
  all.push('Calculus/QuasiRandomIntegral.js');
  all.push('Calculus/RidderDerivative.js');
  all.push('Calculus/RombergIntegral.js');
+ all.push('Calculus/RungeKuttaODE.js');
  all.push('Calculus/SymbolicDerivative.js');
  all.push('Calculus/Surreal.js');
  all.push('Calculus/SimpsonIntegral.js');
