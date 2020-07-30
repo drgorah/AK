@@ -46,7 +46,6 @@
     if(ak.nativeType(x0)!==ak.NUMBER_T || !isFinite(x0) || ak.nativeType(x1)!==ak.NUMBER_T || !isFinite(x1)) throw new Error('invalid interval in ak.midpointODE');
     n = ak.ceil(Math.abs(x1-x0)/dx);
     if(n>ak.INT_MAX) throw new Error('too many steps in ak.midpointODE');
-    if(n===0) n = 1;
     return ak.nativeType(y0)===ak.NUMBER_T ? numberMidpointODE(f, n, x0, x1, y0) : generalMidpointODE(f, n, x0, x1, y0);
    };
   };
