@@ -66,50 +66,77 @@
    return y0;
   }
 
-  ak.rungeKuttaODE = function(f, dx, a, b, c) {
-   var s = 0;
-   var tc = ak.nativeType(c);
-   var ai, i, j, al0, k;
-
+  function checkArgTypes(f, dx, a, b, c, tc) {
    if(ak.nativeType(f)!==ak.FUNCTION_T) throw new Error('invalid function in ak.rungeKuttaODE');
-   dx = Math.abs(dx);
    if(isNaN(dx) || dx===0) throw new Error('invalid step length in ak.rungeKuttaODE');
-
    if(ak.nativeType(a)!==ak.ARRAY_T) throw new Error('invalid matrix in ak.rungeKuttaODE');
    if(ak.nativeType(b)!==ak.ARRAY_T) throw new Error('invalid weights in ak.rungeKuttaODE');
-
-   if(tc===ak.UNDEFINED_T) c = new Array(a.length);
-   else if(tc!==ak.ARRAY_T) throw new Error('invalid nodes in ak.rungeKuttaODE');
-
    if(b.length!==a.length+1) throw new Error('matrix/weights size mismatch in ak.rungeKuttaODE');
-   if(c.length!==a.length) throw new Error('matrix/notes size mismatch in ak.rungeKuttaODE');
 
-   al0 = new Array(a.length);
+   if(tc!==ak.UNDEFINED_T) {
+    if(tc!==ak.ARRAY_T) throw new Error('invalid nodes in ak.rungeKuttaODE');
+    if(c.length!==a.length) throw new Error('matrix/notes size mismatch in ak.rungeKuttaODE');
+   }
+  }
+
+  function checkTableau(a, b, c, tc) {
+   var ai, i, j;
 
    for(i=0;i<a.length;++i) {
     ai = a[i];
-    if(tc===ak.UNDEFINED_T) c[i] = 0;
 
     if(ak.nativeType(b[i])!==ak.NUMBER_T || !isFinite(b[i])) throw new Error('invalid weight in ak.rungeKuttaODE');
     if(ak.nativeType(ai)!==ak.ARRAY_T || ai.length!==i+1) throw new Error('invalid matrix row in ak.rungeKuttaODE');
     for(j=0;j<=i;++j) {
      if(ak.nativeType(ai[j])!==ak.NUMBER_T || !isFinite(ai[j])) throw new Error('invalid matrix element in ak.rungeKuttaODE');
-     if(tc===ak.UNDEFINED_T) c[i] += ai[j];
     }
-    if(ak.nativeType(c[i])!==ak.NUMBER_T || !isFinite(c[i]) || c[i]===0) throw new Error('invalid node in ak.rungeKuttaODE');
+    if(tc!==ak.UNDEFINED_T && (ak.nativeType(c[i])!==ak.NUMBER_T || !isFinite(c[i]) || c[i]===0)) throw new Error('invalid node in ak.rungeKuttaODE');
+   }
+   if(ak.nativeType(b[i])!==ak.NUMBER_T || !isFinite(b[i])) throw new Error('invalid weight in ak.rungeKuttaODE');
+  }
+
+  function makeNodes(a) {
+   var c = new Array(a.length);
+   var i;
+
+   for(i=0;i<a.length;++i) {
+    c[i] = a[i].reduce(function(s,x){return s+x;}, 0);
+    if(!isFinite(c[i]) || c[i]===0) throw new Error('invalid node in ak.rungeKuttaODE');
+   }
+   return c;
+  }
+
+  function makeLB(a) {
+   var alb = new Array(a.length);
+   var ai, i, j;
+
+   for(i=0;i<a.length;++i) {
+    ai = a[i];
 
     j = 0;
     while(j<=i && ai[j]===0) ++j;
-    al0[i] = j;
-    s += b[i];
+    alb[i] = j;
    }
-   if(ak.nativeType(b[i])!==ak.NUMBER_T || !isFinite(b[i])) throw new Error('invalid weight in ak.rungeKuttaODE');
-   s += b[i];
+   return alb;
+  }
+
+  ak.rungeKuttaODE = function(f, dx, a, b, c) {
+   var s = 0;
+   var tc = ak.nativeType(c);
+   var i, j, alb, s, k;
+
+   dx = Math.abs(dx);
+   checkArgTypes(f, dx, a, b, c, tc);
+   checkTableau(a, b, c, tc);
+
+   if(tc===ak.UNDEFINED_T) c = makeNodes(a);
+   s = b.reduce(function(s,x){return s+x;}, 0);
    if(!isFinite(s) || s===0) throw new Error('invalid total weight in ak.rungeKuttaODE');
 
+   alb = makeLB(a);
    a = a.map(function(r){return r.slice(0);});
    b = b.slice(0);
-   c = c.slice(0);
+   if(tc!==ak.UNDEFINED_T) c = c.slice(0);
    k = new Array(a.length+1);
 
    return function(x0, x1, y0) {
@@ -117,7 +144,7 @@
     if(ak.nativeType(x0)!==ak.NUMBER_T || !isFinite(x0) || ak.nativeType(x1)!==ak.NUMBER_T || !isFinite(x1)) throw new Error('invalid interval in ak.rungeKuttaODE');
     n = ak.ceil(Math.abs(x1-x0)/dx);
     if(n>ak.INT_MAX) throw new Error('too many steps in ak.rungeKuttaODE');
-    return ak.nativeType(y0)===ak.NUMBER_T ? numberRungeKuttaODE(f, n, x0, x1, y0, a, b, c, s, al0, k) : generalRungeKuttaODE(f, n, x0, x1, y0, a, b, c, s, al0, k);
+    return ak.nativeType(y0)===ak.NUMBER_T ? numberRungeKuttaODE(f, n, x0, x1, y0, a, b, c, s, alb, k) : generalRungeKuttaODE(f, n, x0, x1, y0, a, b, c, s, alb, k);
    };
   };
 
