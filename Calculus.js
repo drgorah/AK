@@ -11,6 +11,7 @@
 (function() {
  var all = [];
  all.push('Calculus/EulerODE.js');
+ all.push('Calculus/FehlbergODE.js');
  all.push('Calculus/FiniteDifference.js');
  all.push('Calculus/MidpointODE.js');
  all.push('Calculus/MonteCarloIntegral.js');
