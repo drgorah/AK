@@ -121,7 +121,6 @@
   }
 
   ak.rungeKuttaODE = function(f, dx, a, b, c) {
-   var s = 0;
    var tc = ak.nativeType(c);
    var i, j, alb, s, k;
 
