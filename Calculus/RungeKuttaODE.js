@@ -121,18 +121,18 @@
    };
   };
 
-  ak.rk1EulerODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [], [1]);};
-  ak.rk2MidpointODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.5]], [0,1]);};
-  ak.rk2HeunODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1]], [0.5,0.5]);};
-  ak.rk2RalstonODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[2/3]], [0.25,0.75]);};
-  ak.rk3KuttaODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.5],[-1,2]], [1,4,1]);};
-  ak.rk3HeunODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/3],[0,2/3]], [1,0,3]);};
-  ak.rk3RalstonODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.25],[0,0.75]], [2,3,4]);};
-  ak.rk4ClassicODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.5],[0,0.5],[0,0,1]], [1,2,2,1]);};
-  ak.rk4KuttaODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/3],[-1/3,1],[1,-1,1]], [1,3,3,1]);};
-  ak.rk5FehlbergODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/4],[3/32,9/32],[1932/2197,-7200/2197,7296/2197],[439/216,-8,3680/513,-845/4104],[-8/27,2,-3544/2565,1859/4104,-11/40]], [33440,0,146432,142805,-50787,10260]);};
-  ak.rk5CashKarpODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/5],[3/40,9/40],[3/10,-9/10,6/5],[-11/54,5/2,-70/27,35/27],[1631/55296,175/512,575/13824,44275/110592,253/4096]], [9361,0,38500,20125,0,27648]);};
-  ak.rk5DormandPrinceODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/5],[3/40,9/40],[44/45,-56/15,32/9],[19372/6561,-25360/2187,64448/6561,-212/729],[9017/3168,-355/33,46732/5247,49/176,-5103/18656]], [12985,0,64000,92750,-45927,18656]);};
+  ak.eulerRK1ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [], [1]);};
+  ak.midpointRK2ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.5]], [0,1]);};
+  ak.heunRK2ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1]], [0.5,0.5]);};
+  ak.ralstonRK2ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[2/3]], [0.25,0.75]);};
+  ak.kuttaRK3ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.5],[-1,2]], [1,4,1]);};
+  ak.heunRK3ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/3],[0,2/3]], [1,0,3]);};
+  ak.ralstonRK3ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.25],[0,0.75]], [2,3,4]);};
+  ak.classicRK4ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[0.5],[0,0.5],[0,0,1]], [1,2,2,1]);};
+  ak.kuttaRK4ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/3],[-1/3,1],[1,-1,1]], [1,3,3,1]);};
+  ak.fehlbergRK5ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/4],[3/32,9/32],[1932/2197,-7200/2197,7296/2197],[439/216,-8,3680/513,-845/4104],[-8/27,2,-3544/2565,1859/4104,-11/40]], [33440,0,146432,142805,-50787,10260]);};
+  ak.cashKarpRK5ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/5],[3/40,9/40],[3/10,-9/10,6/5],[-11/54,5/2,-70/27,35/27],[1631/55296,175/512,575/13824,44275/110592,253/4096]], [9361,0,38500,20125,0,27648]);};
+  ak.dormandPrinceRK5ODE = function(f, dx) {return ak.rungeKuttaODE(f, dx, [[1/5],[3/40,9/40],[44/45,-56/15,32/9],[19372/6561,-25360/2187,64448/6561,-212/729],[9017/3168,-355/33,46732/5247,49/176,-5103/18656]], [12985,0,64000,92750,-45927,18656]);};
  }
 
  ak.using('', define);
