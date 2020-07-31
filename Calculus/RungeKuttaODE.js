@@ -122,7 +122,7 @@
 
   ak.rungeKuttaODE = function(f, dx, a, b, c) {
    var tc = ak.nativeType(c);
-   var i, j, alb, s, k;
+   var s, alb, k;
 
    dx = Math.abs(dx);
    checkArgTypes(f, dx, a, b, c, tc);
