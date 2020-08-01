@@ -54,7 +54,7 @@
     if(d<e0 || d>e1) {
      dx *= Math.pow((e0/d)*(e1/d), 1/(2*order));
      n = ak.ceil(Math.abs(x1-x0)/dx);
-     if(n>steps) throw new Error('too many steps in ak.fehlbergODE');
+     if(n>ak.INT_MAX) throw new Error('too many steps in ak.fehlbergODE');
      dx = (x1-x0)/n;
      i = -1;
     }
@@ -106,7 +106,7 @@
     if(d<e0 || d>e1) {
      dx *= Math.pow((e0/d)*(e1/d), 1/(2*order));
      n = ak.ceil(Math.abs(x1-x0)/dx);
-     if(n>steps) throw new Error('too many steps in ak.fehlbergODE');
+     if(n>ak.INT_MAX) throw new Error('too many steps in ak.fehlbergODE');
      dx = (x1-x0)/n;
      i = -1;
     }
@@ -224,7 +224,7 @@
     var n;
     if(ak.nativeType(x0)!==ak.NUMBER_T || !isFinite(x0) || ak.nativeType(x1)!==ak.NUMBER_T || !isFinite(x1)) throw new Error('invalid interval in ak.fehlbergODE');
     n = ak.ceil(Math.abs(x1-x0)/dx);
-    if(n>steps) {alert(n + '\n' + steps);throw new Error('too many steps in ak.fehlbergODE');}
+    if(n>ak.INT_MAX) throw new Error('too many steps in ak.fehlbergODE');
     return ak.nativeType(y0)===ak.NUMBER_T ? numberFehlbergODE(f, n, x0, x1, y0, e0, e1, order, a, b0, b1, c, s0, s1, steps, alb, k, cyclic) : generalFehlbergODE(f, n, x0, x1, y0, e0, e1, order, a, b0, b1, c, s0, s1, steps, alb, k, cyclic);
    };
   };
