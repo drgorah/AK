@@ -130,7 +130,7 @@
 
    if(tc!==ak.UNDEFINED_T) {
     if(tc!==ak.ARRAY_T) throw new Error('invalid nodes in ak.fehlbergODE');
-    if(c.length!==a.length) throw new Error('matrix/notes size mismatch in ak.fehlbergODE');
+    if(c.length!==a.length) throw new Error('matrix/nodes size mismatch in ak.fehlbergODE');
    }
 
    if(isNaN(steps)) throw new Error('invalid maximum steps in ak.fehlbergODE');

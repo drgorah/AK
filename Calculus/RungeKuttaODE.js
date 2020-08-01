@@ -75,7 +75,7 @@
 
    if(tc!==ak.UNDEFINED_T) {
     if(tc!==ak.ARRAY_T) throw new Error('invalid nodes in ak.rungeKuttaODE');
-    if(c.length!==a.length) throw new Error('matrix/notes size mismatch in ak.rungeKuttaODE');
+    if(c.length!==a.length) throw new Error('matrix/nodes size mismatch in ak.rungeKuttaODE');
    }
   }
 
