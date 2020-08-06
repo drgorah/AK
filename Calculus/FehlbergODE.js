@@ -160,7 +160,7 @@
 
    for(i=0;i<a.length;++i) {
     c[i] = a[i].reduce(function(s,x){return s+x;}, 0);
-    if(!isFinite(c[i]) || c[i]===0) throw new Error('invalid node in ak.rungeKuttaODE');
+    if(!isFinite(c[i]) || c[i]===0) throw new Error('invalid node in ak.fehlbergODE');
    }
    return c;
   }
