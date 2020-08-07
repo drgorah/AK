@@ -179,10 +179,11 @@
    return alb;
   }
 
-  function isCyclic(a, b0, s0) {
+  function isCyclic(a, b0, c, s0) {
    var eps = (b0.length+1)*ak.EPSILON;
    var ai = a[a.length-1];
    var j = 0;
+   if(Math.abs(c[c.length-1]-1)>ai.length*ak.EPSILON) return false;
    while(j<ai.length && Math.abs(b0[j]-ai[j]*s0)<=eps*Math.abs(b0[j])) ++j;
    return j===ai.length && b0[j]===0;
   }
@@ -218,7 +219,7 @@
    b1 = b1.slice(0);
    if(tc!==ak.UNDEFINED_T) c = c.slice(0);
    k = new Array(a.length+1);
-   cyclic = isCyclic(a, b0, s0);
+   cyclic = isCyclic(a, b0, c, s0);
 
    return function(x0, x1, y0) {
     var n;
