@@ -116,9 +116,8 @@
    return y0;
   }
 
-  function checkArgTypes(f, dx, e0, e1, order, a, b0, b1, c, steps, tc) {
+  function checkArgTypes(f, e0, e1, order, a, b0, b1, c, steps, tc) {
    if(ak.nativeType(f)!==ak.FUNCTION_T) throw new Error('invalid function in ak.fehlbergODE');
-   if(isNaN(dx) || dx===0) throw new Error('invalid step length in ak.fehlbergODE');
    if(isNaN(e0) || e0===0) throw new Error('invalid lower error threshold in ak.fehlbergODE');
    if(isNaN(e1) || e1<=e0) throw new Error('invalid upper error threshold in ak.fehlbergODE');
    if(ak.nativeType(order)!==ak.NUMBER_T || order!==ak.floor(order) || order<1) throw new Error('invalid order in ak.fehlbergODE');
@@ -188,10 +187,10 @@
    return j===ai.length && b0[j]===0;
   }
 
-  ak.fehlbergODE = function(f, dx, e0, e1, order, a, b0, b1, c, steps) {
+  ak.fehlbergODE = function(f, e0, e1, order, a, b0, b1, c, steps) {
    var tc = ak.nativeType(c);
    var ts = ak.nativeType(steps);
-   var s0, s1, alb, k, cyclic;
+   var s0, s1, dx, alb, k, cyclic;
 
    if(tc===ak.NUMBER_T && ts===ak.UNDEFINED_T) {
     steps = c;
@@ -199,12 +198,11 @@
     tc = ak.UNDEFINED_T;
    }
 
-   dx = Math.abs(dx);
    e0 = Math.abs(e0);
    e1 = Math.abs(e1);
    steps = ts===ak.UNDEFINED_T ? 1000000 : ak.floor(Math.abs(steps));
 
-   checkArgTypes(f, dx, e0, e1, order, a, b0, b1, c, steps, tc);
+   checkArgTypes(f, e0, e1, order, a, b0, b1, c, steps, tc);
    checkTableau(a, b0, b1, c, tc);
 
    if(tc===ak.UNDEFINED_T) c = makeNodes(a);
@@ -212,6 +210,8 @@
    if(!isFinite(s0) || s0===0) throw new Error('invalid total step weight in ak.fehlbergODE');
    s1 = b1.reduce(function(s,x){return s+x;}, 0);
    if(!isFinite(s1) || s1===0) throw new Error('invalid total error weight in ak.fehlbergODE');
+   dx = Math.pow(e0*e1, 1/(2*order));
+   if(dx===0) throw new Error('invalid step length in ak.fehlbergODE');
 
    alb = makeLB(a);
    a = a.map(function(r){return r.slice(0);});
@@ -230,11 +230,11 @@
    };
   };
 
-  ak.heunRKF2ODE = function(f, dx, e0, e1, steps) {return ak.fehlbergODE(f, dx, e0, e1, 2, [[1]], [1,1], [1, 0], undefined, steps);};
-  ak.bogackiShampineRKF3ODE = function(f, dx, e0, e1, steps) {return ak.fehlbergODE(f, dx, e0, e1, 3, [[1/2],[0,3/4],[2/9,1/3,4/9]], [2,3,4,0], [7,6,8,3], undefined, steps);};
-  ak.fehlbergRKF5ODE = function(f, dx, e0, e1, steps) {return ak.fehlbergODE(f, dx, e0, e1, 5, [[1/4],[3/32,9/32],[1932/2197,-7200/2197,7296/2197],[439/216,-8,3680/513,-845/4104],[-8/27,2,-3544/2565,1859/4104,-11/40]],[33440,0,146432,142805,-50787,10260],[2375,0,11264,10985,-4104,0], undefined, steps);};
-  ak.cashKarpRKF5ODE = function(f, dx, e0, e1, steps) {return ak.fehlbergODE(f, dx, e0, e1, 5, [[1/5],[3/40,9/40],[3/10,-9/10,6/5],[-11/54,5/2,-70/27,35/27],[1631/55296,175/512,575/13824,44275/110592,253/4096]],[9361,0,38500,20125,0,27648],[39550,0,148600,94675,7479,96768], undefined, steps);};
-  ak.dormandPrinceRKF5ODE = function(f, dx, e0, e1, steps) {return ak.fehlbergODE(f, dx, e0, e1, 5, [[1/5],[3/40,9/40],[44/45,-56/15,32/9],[19372/6561,-25360/2187,64448/6561,-212/729],[9017/3168,-355/33,46732/5247,49/176,-5103/18656],[35/384,0,500/1113,125/192,-2187/6784,11/84]],[12985,0,64000,92750,-45927,18656,0],[1921409,0,9690880,13122270,-5802111,1902912,534240], undefined, steps);};
+  ak.heunRKF2ODE = function(f, e0, e1, steps) {return ak.fehlbergODE(f, e0, e1, 2, [[1]], [1,1], [1, 0], undefined, steps);};
+  ak.bogackiShampineRKF3ODE = function(f, e0, e1, steps) {return ak.fehlbergODE(f, e0, e1, 3, [[1/2],[0,3/4],[2/9,1/3,4/9]], [2,3,4,0], [7,6,8,3], undefined, steps);};
+  ak.fehlbergRKF5ODE = function(f, e0, e1, steps) {return ak.fehlbergODE(f, e0, e1, 5, [[1/4],[3/32,9/32],[1932/2197,-7200/2197,7296/2197],[439/216,-8,3680/513,-845/4104],[-8/27,2,-3544/2565,1859/4104,-11/40]],[33440,0,146432,142805,-50787,10260],[2375,0,11264,10985,-4104,0], undefined, steps);};
+  ak.cashKarpRKF5ODE = function(f, e0, e1, steps) {return ak.fehlbergODE(f, e0, e1, 5, [[1/5],[3/40,9/40],[3/10,-9/10,6/5],[-11/54,5/2,-70/27,35/27],[1631/55296,175/512,575/13824,44275/110592,253/4096]],[9361,0,38500,20125,0,27648],[39550,0,148600,94675,7479,96768], undefined, steps);};
+  ak.dormandPrinceRKF5ODE = function(f, e0, e1, steps) {return ak.fehlbergODE(f, e0, e1, 5, [[1/5],[3/40,9/40],[44/45,-56/15,32/9],[19372/6561,-25360/2187,64448/6561,-212/729],[9017/3168,-355/33,46732/5247,49/176,-5103/18656],[35/384,0,500/1113,125/192,-2187/6784,11/84]],[12985,0,64000,92750,-45927,18656,0],[1921409,0,9690880,13122270,-5802111,1902912,534240], undefined, steps);};
  }
 
  ak.using('', define);
