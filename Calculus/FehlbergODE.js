@@ -1,4 +1,4 @@
-//AK/Calculus/RungeKuttaODE.js
+//AK/Calculus/FehlbergODE.js
 
 //Copyright Richard Harris 2020.
 //Distributed under the Boost Software License, Version 1.0.
