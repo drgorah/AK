@@ -10,7 +10,7 @@
 
 (function() {
  function define() {
-  if(ak.RungeKuttaODE) return;
+  if(ak.rungeKuttaODE) return;
 
   function numberRungeKuttaODE(f, n, x0, x1, y0, a, b, c, s, alb, k) {
    var kn = k.length;

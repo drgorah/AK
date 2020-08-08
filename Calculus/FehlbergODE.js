@@ -10,7 +10,7 @@
 
 (function() {
  function define() {
-  if(ak.FehlbergODE) return;
+  if(ak.fehlbergODE) return;
 
   function numberFehlbergODE(f, n, x0, x1, y0, e0, e1, order, a, b0, b1, c, s0, s1, steps, alb, k, cyclic) {
    var kn = k.length;
