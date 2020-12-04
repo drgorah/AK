@@ -149,7 +149,7 @@
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
    if(state.k<=2) {
-    if(k!==1 && k!==2) {
+    if(state.k!==1 && state.k!==2) {
      k = state.k>1 ? state.k-1 : state.k;
      d = 1.0334 - 0.0766 * Math.exp(2.2942*k);
      a = Math.pow(2-2*Math.exp(-d/2), k);
