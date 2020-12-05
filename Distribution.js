@@ -28,6 +28,7 @@
  all.push('Distribution/NormalDistribution.js');
  all.push('Distribution/PoissonDistribution.js');
  all.push('Distribution/SlashDistribution.js');
+ all.push('Distribution/StudentTDistribution.js');
  all.push('Distribution/UniformDistribution.js');
  ak.using(all);
 })();
