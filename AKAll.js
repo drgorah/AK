@@ -29,5 +29,6 @@
  all.push('Sequence.js');
  all.push('Series.js');
  all.push('Special.js');
+ all.push('Stats.js');
  ak.using(all);
 })();
