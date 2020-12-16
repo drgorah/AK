@@ -81,6 +81,8 @@
    i = 0;
    for(r=0;r<nr;++r) for(c=0;c<nc;++c) {
      crc = cons.at(r, c);
+     if(!isFinite(crc) || crc<0) throw new Error('invalid table entry in sk.chiSquaredTestContingent');
+
      sr[r] += crc;
      sc[c] += crc;
      observed[i++] = crc;
