@@ -13,6 +13,7 @@
  all.push('Distribution/BernoulliDistribution.js');
  all.push('Distribution/BinomialDistribution.js');
  all.push('Distribution/CauchyDistribution.js');
+ all.push('Distribution/ChiDistribution.js');
  all.push('Distribution/ChiSquaredDistribution.js');
  all.push('Distribution/CopulaDistribution.js');
  all.push('Distribution/ExponentialDistribution.js');
@@ -28,7 +29,7 @@
  all.push('Distribution/NormalDistribution.js');
  all.push('Distribution/PoissonDistribution.js');
  all.push('Distribution/SlashDistribution.js');
- all.push('Distribution/StudentTDistribution.js');
+ all.push('Distribution/StudentsTDistribution.js');
  all.push('Distribution/UniformDistribution.js');
  ak.using(all);
 })();

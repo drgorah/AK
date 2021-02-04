@@ -1,4 +1,4 @@
-//AK/Distribution/StudentTDistribution.js
+//AK/Distribution/StudentsTDistribution.js
 
 //Copyright Richard Harris 2020.
 //Distributed under the Boost Software License, Version 1.0.
@@ -10,9 +10,9 @@
 
 (function() {
  function define() {
-  if(ak.studentTPDF) return;
+  if(ak.studentsTPDF) return;
 
-  ak.studentTPDF = function() {
+  ak.studentsTPDF = function() {
    var state = {nu: 2};
    var arg0  = arguments[0];
    var f, a;
@@ -38,14 +38,14 @@
    return ak.complex(2*re(0, b), 0);
   }
 
-  ak.studentTCF = function() {
+  ak.studentsTCF = function() {
    var state = {nu: 2, eps: Math.pow(ak.EPSILON, 0.5)};
    var arg0  = arguments[0];
    var pdf, b, f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   pdf = ak.studentTPDF(state.nu);
+   pdf = ak.studentsTPDF(state.nu);
    b = cfBound(pdf, state.eps);
 
    f = function(t) {return cfIntegral(t, pdf, b, state.eps);};
@@ -53,7 +53,7 @@
    return Object.freeze(f);
   };
 
-  ak.studentTCDF = function() {
+  ak.studentsTCDF = function() {
    var state = {nu: 2};
    var arg0  = arguments[0];
    var f, a;
@@ -91,15 +91,15 @@
    return isFinite(b1) ? inv(c, [b0, b1]) : b1;
   }
 
-  ak.studentTInvCDF = function() {
+  ak.studentsTInvCDF = function() {
    var state = {nu: 2, eps: Math.pow(ak.EPSILON, 0.75)};
    var arg0  = arguments[0];
    var pdf, cdf, fdf, inv, f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
 
-   pdf = ak.studentTPDF(state.nu);
-   cdf = ak.studentTCDF(state.nu);
+   pdf = ak.studentsTPDF(state.nu);
+   cdf = ak.studentsTCDF(state.nu);
    fdf = function(x){return [cdf(x), pdf(x)];};
    inv = ak.newtonInverse(fdf, state.eps);
 
@@ -108,7 +108,7 @@
    return Object.freeze(f);
   };
 
-  ak.studentTRnd = function() {
+  ak.studentsTRnd = function() {
    var state = {nu: 2, rnd: Math.random};
    var arg0  = arguments[0];
    var f, phi, chi2;
@@ -138,7 +138,7 @@
    constructors[ak.NUMBER_T][ak.nativeType(arg1)](state, arg1);
 
    state.nu = Number(nu);
-   if(state.nu<=0 || !isFinite(state.nu) || state.nu!==ak.floor(state.nu)) throw new Error('invalid nu in ak.studentT distribution');
+   if(state.nu<=0 || !isFinite(state.nu) || state.nu!==ak.floor(state.nu)) throw new Error('invalid nu in ak.studentsT distribution');
   };
 
   constructors[ak.NUMBER_T][ak.UNDEFINED_T] = function(state) {
@@ -150,7 +150,7 @@
 
   constructors[ak.NUMBER_T][ak.NUMBER_T] = function(state, eps) {
    state.eps = Number(eps);
-   if(isNaN(state.eps)) throw new Error('invalid convergence threshold in ak.studentT distribution');
+   if(isNaN(state.eps)) throw new Error('invalid convergence threshold in ak.studentsT distribution');
   };
  }
 
