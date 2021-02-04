@@ -13,7 +13,6 @@
  all.push('Distribution/BernoulliDistribution.js');
  all.push('Distribution/BinomialDistribution.js');
  all.push('Distribution/CauchyDistribution.js');
- all.push('Distribution/ChiDistribution.js');
  all.push('Distribution/ChiSquaredDistribution.js');
  all.push('Distribution/CopulaDistribution.js');
  all.push('Distribution/ExponentialDistribution.js');
