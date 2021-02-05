@@ -11,6 +11,6 @@
 (function() {
  var all = [];
  all.push('Stats/ChiSquaredTest.js');
- all.push('Stats/StudentTTest.js');
+ all.push('Stats/StudentsTTest.js');
  ak.using(all);
 })();
