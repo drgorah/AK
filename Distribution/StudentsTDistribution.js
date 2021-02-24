@@ -149,7 +149,7 @@
   };
 
   constructors[ak.NUMBER_T][ak.NUMBER_T] = function(state, eps) {
-   state.eps = Number(eps);
+   state.eps = Math.abs(eps);
    if(isNaN(state.eps)) throw new Error('invalid convergence threshold in ak.studentsT distribution');
   };
  }
