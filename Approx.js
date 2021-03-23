@@ -15,6 +15,7 @@
  all.push('Approx/KernelSmooth.js');
  all.push('Approx/LinearInterpolate.js');
  all.push('Approx/LinearRegression.js');
+ all.push('Approx/MedianSmooth.js');
  all.push('Approx/MonoCubicSplineInterpolate.js');
  all.push('Approx/MultiLinearInterpolate.js');
  all.push('Approx/NevilleInterpolate.js');
