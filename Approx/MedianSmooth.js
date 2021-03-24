@@ -38,12 +38,9 @@
    var k = neighbours.length;
    var compare_x = function(x0, x){return x0.x-x;};
    var pos = ak._unsafeLowerBound(nodes, x, compare_x, 0, n);
-   var i0 = pos;
+   var i0 = pos-1;
    var i1 = pos;
    var j = 0;
-
-   if(i0>0) --i0;
-   else     ++i1;
 
    while(j!==k) {
     if(i0>=0 && (i1===n || x-nodes[i0].x<nodes[i1].x-x)) neighbours[j++] = nodes[i0--];
