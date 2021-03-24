@@ -21,11 +21,41 @@
    return copy;
   }
 
-  ak._unsafeMedianSmooth = function(x, nodes, neighbours) {
+  function median(neighbours) {
+   var k = neighbours.length;
+   var compare_y = function(x0, x1){return x0.y-x1.y;};
+
+   if(k%2===1) {
+    ak.partialSort(neighbours, (k+1)/2, compare_y);
+    return neighbours[(k-1)/2].y;
+   }
+   ak.partialSort(neighbours, k/2+1, compare_y);
+   return 0.5*(neighbours[(k/2-1)].y + neighbours[(k/2)].y);
+  }
+
+  ak._unsafeUniMedianSmooth = function(x, nodes, neighbours) {
+   var n = nodes.length;
+   var k = neighbours.length;
+   var compare_x = function(x0, x){return x0.x-x;};
+   var pos = ak._unsafeLowerBound(nodes, x, compare_x, 0, n);
+   var i0 = pos;
+   var i1 = pos;
+   var j = 0;
+
+   if(i0>0) --i0;
+   else     ++i1;
+
+   while(j!==k) {
+    if(i0>=0 && (i1===n || x-nodes[i0].x<nodes[i1].x-x)) neighbours[j++] = nodes[i0--];
+    else neighbours[j++] = nodes[i1++];
+   }
+   return median(neighbours);
+  }
+
+  ak._unsafeMultiMedianSmooth = function(x, nodes, neighbours) {
    var n = nodes.length;
    var k = neighbours.length;
    var compare_x = function(x0, x1){return ak.dist(x0.x, x)-ak.dist(x1.x, x);};
-   var compare_y = function(x0, x1){return x0.y-x1.y;};
    var i = 0;
    var dk1, di, j;
 
@@ -45,25 +75,25 @@
     }
     ++i;
    }
-   if(k%2===1) {
-    ak.partialSort(neighbours, (k+1)/2, compare_y);
-    return neighbours[(k-1)/2].y;
-   }
-   ak.partialSort(neighbours, k/2+1, compare_y);
-   return 0.5*(neighbours[(k/2-1)].y + neighbours[(k/2)].y);
+   return median(neighbours);
   };
 
   ak.medianSmooth = function() {
    var state = {nodes:[], k:undefined};
    var arg0 = arguments[0];
-   var neighbours, f;
+   var nodes, neighbours, f;
 
    constructors[ak.nativeType(arg0)](state, arg0, arguments);
    neighbours = new Array(state.k);
 
-   f = function(x) {
-    return ak._unsafeMedianSmooth(x, state.nodes, neighbours);
-   };
+   if(ak.nativeType(state.nodes[0].x)===ak.NUMBER_T) {
+    nodes = copyNodes(state.nodes);
+    nodes.sort(function(x0, x1){return x0.x-x1.x;});
+    f = function(x) {return ak._unsafeUniMedianSmooth(x, nodes, neighbours);};
+   }
+   else {
+    f = function(x) {return ak._unsafeMultiMedianSmooth(x, state.nodes, neighbours);};
+   }
    f.nodes = function() {return copyNodes(state.nodes);};
    f.k = function() {return state.k;};
    return Object.freeze(f);
