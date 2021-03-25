@@ -16,6 +16,8 @@
  all.push('Optimise/ConjugateMinimum.js');
  all.push('Optimise/GeneticMinimum.js');
  all.push('Optimise/GoldenMinimum.js');
+ all.push('Optimise/NoisyAnnealMinimum.js');
+ all.push('Optimise/NoisyBlindfoldMinimum.js');
  all.push('Optimise/PolytopeMinimum.js');
  all.push('Optimise/QuasiNewtonMinimum.js');
  all.push('Optimise/WolfeLineSearch.js');
