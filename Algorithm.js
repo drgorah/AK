@@ -22,6 +22,7 @@
  all.push('Algorithm/LexicographicalCompare.js');
  all.push('Algorithm/LowerBound.js');
  all.push('Algorithm/MaxElement.js');
+ all.push('Algorithm/Median.js');
  all.push('Algorithm/Merge.js');
  all.push('Algorithm/MinElement.js');
  all.push('Algorithm/NextState.js');

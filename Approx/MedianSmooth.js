@@ -21,18 +21,6 @@
    return copy;
   }
 
-  function median(neighbours) {
-   var k = neighbours.length;
-   var compare_y = function(x0, x1){return x0.y-x1.y;};
-
-   if(k%2===1) {
-    ak.partialSort(neighbours, (k+1)/2, compare_y);
-    return neighbours[(k-1)/2].y;
-   }
-   ak.partialSort(neighbours, k/2+1, compare_y);
-   return 0.5*(neighbours[(k/2-1)].y + neighbours[(k/2)].y);
-  }
-
   ak._unsafeUniMedianSmooth = function(x, nodes, neighbours) {
    var n = nodes.length;
    var k = neighbours.length;
@@ -41,12 +29,14 @@
    var i0 = pos-1;
    var i1 = pos;
    var j = 0;
+   var median;
 
    while(j!==k) {
     if(i0>=0 && (i1===n || x-nodes[i0].x<nodes[i1].x-x)) neighbours[j++] = nodes[i0--];
     else neighbours[j++] = nodes[i1++];
    }
-   return median(neighbours);
+   median = ak.median(neighbours, function(x0, x1){return x0.y-x1.y;});
+   return 0.5*(median[0].y+median[1].y);
   }
 
   ak._unsafeMultiMedianSmooth = function(x, nodes, neighbours) {
@@ -54,7 +44,7 @@
    var k = neighbours.length;
    var compare_x = function(x0, x1){return ak.dist(x0.x, x)-ak.dist(x1.x, x);};
    var i = 0;
-   var dk1, di, j;
+   var dk1, di, j, median;
 
    while(i<k) {neighbours[i] = nodes[i]; ++i;}
    neighbours.sort(compare_x);
@@ -72,7 +62,8 @@
     }
     ++i;
    }
-   return median(neighbours);
+   median = ak.median(neighbours, function(x0, x1){return x0.y-x1.y;});
+   return 0.5*(median[0].y+median[1].y);
   };
 
   ak.medianSmooth = function() {
@@ -145,5 +136,5 @@
   };
  }
 
- ak.using(['Algorithm/LowerBound.js','Algorithm/PartialSort.js'], define);
+ ak.using(['Algorithm/LowerBound.js','Algorithm/Median.js'], define);
 })();
