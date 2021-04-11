@@ -25,6 +25,7 @@
    if(ak.nativeType(end)===ak.UNDEFINED_T) end = a.length;
 
    k = end - start;
+   if(k<=0) return [];
 
    if(k%2===1) {
     ak.partialSort(a, (k+1)/2, compare, start, end);
