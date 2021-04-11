@@ -96,7 +96,7 @@
 
   constructors[ak.ARRAY_T][ak.ARRAY_T] = function(state, x, y, args) {
    var arg2 = args[2];
-   constructors[ak.ARRAY_T][ak.ARRAY_T][ak.nativeType(arg2)](state, x, y, arg2, args);
+   constructors[ak.ARRAY_T][ak.ARRAY_T][ak.nativeType(arg2)](state, x, y, arg2);
   };
 
   constructors[ak.ARRAY_T][ak.ARRAY_T][ak.NUMBER_T] = function(state, x, y, k) {
