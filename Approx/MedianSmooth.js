@@ -37,7 +37,7 @@
    }
    median = ak.median(neighbours, function(x0, x1){return x0.y-x1.y;});
    return 0.5*(median[0].y+median[1].y);
-  }
+  };
 
   ak._unsafeMultiMedianSmooth = function(x, nodes, neighbours) {
    var n = nodes.length;
