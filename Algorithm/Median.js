@@ -13,7 +13,7 @@
   if(ak.median) return;
 
   ak.median = function(a, compare, start, end) {
-   var k;
+   var i, k, mid, m0, m1;
 
    if(ak.nativeType(compare)===ak.UNDEFINED_T) compare = ak.alphaCompare;
    else if(ak.nativeType(compare)!==ak.FUNCTION_T) throw new Error('invalid comparator in ak.median');
@@ -28,13 +28,17 @@
    if(k<=0) return [];
 
    if(k%2===1) {
-    ak.partialSort(a, (k+1)/2, compare, start, end);
-    return [a[(k-1)/2], a[(k-1)/2]];
+    mid = start+(k-1)/2;
+    m0 = ak._unsafeNthElement(a, mid, compare, start, end);
+    return [m0, m0];
    }
-   ak.partialSort(a, k/2+1, compare, start, end);
-   return [a[(k/2-1)], a[(k/2)]];
+   mid = start+k/2;
+   m1 = ak._unsafeNthElement(a, mid, compare, start, end);
+   m0 = a[start];
+   for(i=start+1;i<mid;++i) if(compare(a[i], m0)>0) m0 = a[i];
+   return [m0, m1];
   };
  }
 
- ak.using('Algorithm/PartialSort.js', define);
+ ak.using('Algorithm/NthElement.js', define);
 })();
