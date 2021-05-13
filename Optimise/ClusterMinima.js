@@ -68,16 +68,11 @@
    if(clusters!==ak.floor(clusters) || clusters<1) throw new Error('invalid maximum number of clusters in ak.clusterMinima');
 
    samples = samples.slice(0);
-
    for(i=0;i<length;++i) {
     sample = samples[i];
-    x = sample.x;
-    y = sample.y;
-    if(ak.nativeType(x)===ak.FUNCTION_T) x = x();
-    if(ak.nativeType(y)===ak.FUNCTION_T) y = y();
-
+    x = sample.x; if(ak.nativeType(x)===ak.FUNCTION_T) x = x();
+    y = sample.y; if(ak.nativeType(y)===ak.FUNCTION_T) y = y();
     if(ak.nativeType(y)!==ak.NUMBER_T || isNaN(y)) throw new Error('invalid sample in ak.clusterMinima');
-
     samples[i] = {x:x, y:y};
    }
 
