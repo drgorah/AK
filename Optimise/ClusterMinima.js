@@ -65,7 +65,7 @@
 
    length = samples.length;
    if(n!==ak.floor(n) || n<1 || n>length) throw new Error('invalid sample number cut off in ak.clusterMinima');
-   if(clusters!==ak.floor(clusters) || clusters<1) throw new Error('invalid maximumum number of clusters in ak.clusterMinima');
+   if(clusters!==ak.floor(clusters) || clusters<1) throw new Error('invalid maximum number of clusters in ak.clusterMinima');
 
    samples = samples.slice(0);
 
