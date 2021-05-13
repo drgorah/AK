@@ -59,7 +59,7 @@
   }
 
   function minima(samples, n, clusters, clustering, clusteringArgs) {
-   var i, length, sample;
+   var i, length, sample, x, y;
 
    if(ak.nativeType(samples)!==ak.ARRAY_T) throw new Error('invalid samples in ak.clusterMinima');
 
@@ -71,10 +71,14 @@
 
    for(i=0;i<length;++i) {
     sample = samples[i];
-    if(ak.nativeType(sample.x)===ak.FUNCTION_T) sample.x = sample.x();
-    if(ak.nativeType(sample.y)===ak.FUNCTION_T) sample.y = sample.y();
+    x = sample.x;
+    y = sample.y;
+    if(ak.nativeType(x)===ak.FUNCTION_T) x = x();
+    if(ak.nativeType(y)===ak.FUNCTION_T) y = y();
 
-    if(ak.nativeType(sample.y)!==ak.NUMBER_T || isNaN(sample.y)) throw new Error('invalid sample in ak.clusterMinima');
+    if(ak.nativeType(y)!==ak.NUMBER_T || isNaN(y)) throw new Error('invalid sample in ak.clusterMinima');
+
+    samples[i] = {x:x, y:y};
    }
 
    if(n<length) {
