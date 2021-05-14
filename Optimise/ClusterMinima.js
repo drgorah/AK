@@ -45,7 +45,6 @@
    for(i=0;i<length;++i) {
     median = clusterMedian(samples, members.at(i));
     medians.push(median[0]);
-    if(ak.ne(median[0].x, median[1].x)) medians.push(median[1]);
    }
 
    if(medians.length<clusters) {
@@ -72,7 +71,8 @@
     sample = samples[i];
     x = sample.x; if(ak.nativeType(x)===ak.FUNCTION_T) x = x();
     y = sample.y; if(ak.nativeType(y)===ak.FUNCTION_T) y = y();
-    if(ak.nativeType(y)!==ak.NUMBER_T || isNaN(y)) throw new Error('invalid sample in ak.clusterMinima');
+    if(ak.nativeType(y)!==ak.NUMBER_T) throw new Error('invalid sample in ak.clusterMinima');
+    if(isNaN(y)) y = ak.INFINITY;
     samples[i] = {x:x, y:y};
    }
 
