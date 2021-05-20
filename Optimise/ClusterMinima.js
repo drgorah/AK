@@ -38,13 +38,13 @@
   }
 
   function clusterMedians(samples, members, clusters) {
-   var medians = [];
    var length = members.size();
+   var medians = new Array(length);
    var i, median;
 
    for(i=0;i<length;++i) {
     median = clusterMedian(samples, members.at(i));
-    medians.push(median[0]);
+    medians[i] = median[0];
    }
 
    if(medians.length<clusters) {
