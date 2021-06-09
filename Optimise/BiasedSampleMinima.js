@@ -12,11 +12,20 @@
  function define() {
   if(ak.biasedSampleMinima) return;
 
-  function utility(y, dx, w, d, values, distances) {
-   var n = values.length;
-   var py = ak._unsafeLowerBound(values, y, function(y0, y1) {return y0-y1;}, 0, n) / n;
-   var pd = ak._unsafeLowerBound(distances, dx, function(d0, d1) {return d0-d1;}, 0, n) / n;
-   return Math.pow((1-w)*(1-py) + w*pd, d);
+  function utility(y, dx, w, d, samples, distances) {
+   var n = samples.length;
+   var ny = 0;
+   var nd = 0;
+   var i, py, pd;
+
+   for(i=0;i<n;++i) {
+    if(samples[i].y>y) ++ny;
+    if(distances[i]<dx) ++nd;
+   }
+   py = ny/n;
+   pd = nd/n;
+
+   return Math.pow((1-w)*py + w*pd, d);
   }
 
   function uniSample(lb, ub, halton) {
@@ -37,26 +46,31 @@
    }
    dl = dr;
    distances[n-1] = dl;
-   distances.sort(function(d0, d1){return d0-d1;});
    return distances;
   }
 
-  function uniAdd(f, x, dx, samples, values, distances) {
+  function uniAdd(f, x, dx, samples, distances) {
+   var n = samples.length;
    var y = f(x);
-   var i, j, k;
+   var i;
+
    if(isNaN(y)) y = ak.INFINITY;
-   i = ak._unsafeLowerBound(samples, x, function(x0, x1) {return x0.x-x1;}, 0, samples.length);
-   j = ak._unsafeLowerBound(values, y, function(y0, y1) {return y0-y1;}, 0, values.length);
-   k = ak._unsafeLowerBound(distances, dx, function(d0, d1) {return d0-d1;}, 0, distances.length);
+
+   i = ak._unsafeLowerBound(samples, x, function(x0, x1) {return x0.x-x1;}, 0, n);
    samples.splice(i, 0, {x:x, y:y});
-   values.splice(j, 0, y);
-   distances.splice(k, 0, dx);
+   distances.splice(i, 0, dx);
+
+   if(i>0) {
+    distances[i-1] = Math.min(distances[i-1], Math.abs(samples[i-1].x - x));
+   }
+   if(i<n) {
+    distances[i+1] = Math.min(distances[i+1], Math.abs(samples[i+1].x - x));
+   }
   }
 
   function uniSamples(f, lb, ub, k, w, d, steps, rnd) {
    var samples = [];
-   var values = [];
-   var i, halton, x, y, neighbours, distances, dx;
+   var i, j, halton, x, y, neighbours, distances, dx;
 
    if(!isFinite(lb) || ak.nativeType(ub)!==ak.NUMBER_T || !isFinite(ub)) throw new Error('invalid bound in ak.biasedSampleMinima');
 
@@ -67,18 +81,17 @@
     y = f(x);
     if(isNaN(y)) y = ak.INFINITY;
     samples.push({x:x, y:y});
-    values.push(y);
    }
    samples.sort(function(x0, x1){return x0.x-x1.x;});
-   values.sort(function(y0, y1){return y0-y1;});
    neighbours = new Array(k);
    distances = uniDistances(samples);
 
    for(i=k+1;i<steps;++i) {
     x = uniSample(lb, ub, halton);
     y = ak._unsafeUniMedianSmooth(x, samples, neighbours);
-    dx = Math.abs(x - neighbours[0].x);
-    if(rnd()<utility(y, dx, w, d, values, distances)) uniAdd(f, x, dx, samples, values, distances);
+    dx = ak.INFINITY;
+    for(j=0;j<k;++j) dx = Math.min(dx, Math.abs(neighbours[j].x - x));
+    if(rnd()<utility(y, dx, w, d, samples, distances)) uniAdd(f, x, dx, samples, distances);
    }
    return samples;
   }
@@ -101,24 +114,25 @@
     for(j=0;j<n;++j) if(j!==i) d = Math.min(d, ak.dist(samples[i].x, samples[j].x));
     distances[i] = d;
    }
-   distances.sort(function(d0, d1){return d0-d1;});
    return distances;
   }
 
-  function multiAdd(f, x, dx, samples, values, distances) {
+  function multiAdd(f, x, dx, samples, distances) {
+   var n = samples.length;
    var y = f(x);
-   var j, k;
+   var i;
+
    if(isNaN(y)) y = ak.INFINITY;
-   j = ak._unsafeLowerBound(values, y, function(y0, y1) {return y0-y1;}, 0, values.length);
-   k = ak._unsafeLowerBound(distances, dx, function(d0, d1) {return d0-d1;}, 0, distances.length);
+
+   for(i=0;i<n;++i) {
+    distances[i] = Math.min(distances[i], ak.dist(samples[i].x, x));
+   }
    samples.push({x:x, y:y});
-   values.splice(j, 0, y);
-   distances.splice(k, 0, dx);
+   distances.push(dx);
   }
 
   function multiSamples(f, lb, ub, k, w, d, steps, rnd) {
    var samples = [];
-   var values = [];
    var n = lb.dims();
    var bases, i, j, halton, x, y, distances, neighbours, dx;
 
@@ -138,17 +152,16 @@
     y = f(x);
     if(isNaN(y)) y = ak.INFINITY;
     samples.push({x:x, y:y});
-    values.push(y);
    }
-   values.sort(function(y0, y1){return y0-y1;});
    distances = multiDistances(samples);
 
    neighbours = new Array(k);
    for(i=k+1;i<steps;++i) {
     x = multiSample(lb, ub, halton);
     y = ak._unsafeMultiMedianSmooth(x, samples, neighbours);
-    dx = ak.dist(x, neighbours[0].x);
-    if(rnd()<utility(y, dx, w, d, values, distances)) multiAdd(f, x, dx, samples, values, distances);
+    dx = ak.INFINITY;
+    for(j=0;j<k;++j) dx = Math.min(dx, ak.dist(neighbours[j].x, x));
+    if(rnd()<utility(y, dx, w, d, samples, distances)) multiAdd(f, x, dx, samples, distances);
    }
    return samples;
   }
