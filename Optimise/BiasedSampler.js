@@ -1,4 +1,4 @@
-//AK/Optimise/BiasedSampleMinima.js
+//AK/Optimise/biasedSampler.js
 
 //Copyright Richard Harris 2021.
 //Distributed under the Boost Software License, Version 1.0.
@@ -10,7 +10,7 @@
 
 (function() {
  function define() {
-  if(ak.biasedSampleMinima) return;
+  if(ak.biasedSampler) return;
 
   function utility(y, dx, w, d, samples, distances) {
    var n = samples.length;
@@ -72,7 +72,7 @@
    var samples = [];
    var i, j, halton, x, y, neighbours, distances, dx;
 
-   if(!isFinite(lb) || ak.nativeType(ub)!==ak.NUMBER_T || !isFinite(ub)) throw new Error('invalid bound in ak.biasedSampleMinima');
+   if(!isFinite(lb) || ak.nativeType(ub)!==ak.NUMBER_T || !isFinite(ub)) throw new Error('invalid bound in ak.biasedSampler');
 
    halton = ak.haltonRnd(2, rnd);
 
@@ -136,13 +136,13 @@
    var n = lb.dims();
    var bases, i, j, halton, x, y, distances, neighbours, dx;
 
-   if(n===0 || ak.type(ub)!==ak.VECTOR_T || ub.dims()!==n) throw new Error('invalid bound in ak.biasedSampleMinima');
+   if(n===0 || ak.type(ub)!==ak.VECTOR_T || ub.dims()!==n) throw new Error('invalid bound in ak.biasedSampler');
 
    lb = lb.toArray();
    ub = ub.toArray();
    bases = new Array(n);
    for(i=0;i<n;++i) {
-    if(!isFinite(lb[i]) || !isFinite(ub[i])) throw new Error('invalid bound in ak.biasedSampleMinima');
+    if(!isFinite(lb[i]) || !isFinite(ub[i])) throw new Error('invalid bound in ak.biasedSampler');
     bases[i] = ak.primeSequence(i);
    }
    halton = ak.haltonRnd(bases, rnd);
@@ -166,32 +166,29 @@
    return samples;
   }
 
-  ak.biasedSampleMinima = function(f, steps, clusterMinima, n, clusters, rnd) {
-   if(ak.nativeType(f)!==ak.FUNCTION_T) throw new Error('invalid function in ak.biasedSampleMinima');
-   if(ak.nativeType(steps)!==ak.NUMBER_T || steps<=0 || steps!==ak.floor(steps)) throw new Error('invalid number of steps in ak.biasedSampleMinima');
-   if(ak.nativeType(clusterMinima)!==ak.FUNCTION_T) throw new Error('invalid cluster minima in ak.biasedSampleMinima');
-   if(ak.nativeType(n)!==ak.NUMBER_T || n<=0 || n!==ak.floor(n)) throw new Error('invalid sample number cut off in ak.biasedSampleMinima');
-   if(ak.nativeType(clusters)!==ak.NUMBER_T || clusters<=0 || clusters!==ak.floor(clusters)) throw new Error('invalid maximum number of clusters in ak.biasedSampleMinima');
+  ak.biasedSampler = function(f, steps, rnd) {
+   if(ak.nativeType(f)!==ak.FUNCTION_T) throw new Error('invalid function in ak.biasedSampler');
+   if(ak.nativeType(steps)!==ak.NUMBER_T || steps<=0 || steps!==ak.floor(steps)) throw new Error('invalid number of steps in ak.biasedSampler');
 
    if(ak.nativeType(rnd)===ak.UNDEFINED_T) rnd = Math.random;
-   else if(ak.nativeType(rnd)!==ak.FUNCTION_T) throw new Error('invalid random number generator in ak.biasedSampleMinima');
+   else if(ak.nativeType(rnd)!==ak.FUNCTION_T) throw new Error('invalid random number generator in ak.biasedSampler');
 
    return function(lb, ub, k, w, d) {
     var samples;
-    if(ak.nativeType(k)!==ak.NUMBER_T || k<1 || k!==ak.floor(k)) throw new Error('invalid neighbourhood in ak.biasedSampleMinima');
-    if(ak.nativeType(w)!==ak.NUMBER_T || !(w>=0 && w<=1)) throw new Error('invalid exploration weight in ak.biasedSampleMinima');
+    if(ak.nativeType(k)!==ak.NUMBER_T || k<1 || k!==ak.floor(k)) throw new Error('invalid neighbourhood in ak.biasedSampler');
+    if(ak.nativeType(w)!==ak.NUMBER_T || !(w>=0 && w<=1)) throw new Error('invalid exploration weight in ak.biasedSampler');
 
     if(ak.nativeType(d)===ak.UNDEFINED_T) d = 1.0;
-    else if(ak.nativeType(d)!==ak.NUMBER_T || !(d>0.0)) throw new Error('invalid discrimination factor in ak.biasedSampleMinima');
+    else if(ak.nativeType(d)!==ak.NUMBER_T || !(d>0.0)) throw new Error('invalid discrimination factor in ak.biasedSampler');
 
     if(ak.nativeType(lb)===ak.NUMBER_T) samples = uniSamples(f, lb, ub, k, w, d, steps, rnd);
     else if(ak.type(lb)===ak.VECTOR_T)  samples = multiSamples(f, lb, ub, k, w, d, steps, rnd);
-    else throw new Error('invalid bound in ak.biasedSampleMinima');
+    else throw new Error('invalid bound in ak.biasedSampler');
 
-    return clusterMinima(samples, n, clusters);
+    return samples;
    };
   };
  }
 
- ak.using(['Approx/MedianSmooth.js', 'Matrix/Vector.js', 'Sequence/PrimeSequence.js', 'Random/HaltonRnd.js', 'Optimise/ClusterMinima.js', 'Algorithm/LowerBound.js'], define);
+ ak.using(['Approx/MedianSmooth.js', 'Matrix/Vector.js', 'Sequence/PrimeSequence.js', 'Random/HaltonRnd.js', 'Optimise/Cluster.js', 'Algorithm/LowerBound.js'], define);
 })();
