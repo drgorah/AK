@@ -1,4 +1,4 @@
-//AK/Optimise/biasedSampler.js
+//AK/Optimise/BiasedSampler.js
 
 //Copyright Richard Harris 2021.
 //Distributed under the Boost Software License, Version 1.0.
