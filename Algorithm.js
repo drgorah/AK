@@ -25,12 +25,14 @@
  all.push('Algorithm/Median.js');
  all.push('Algorithm/Merge.js');
  all.push('Algorithm/MinElement.js');
+ all.push('Algorithm/NextCombination.js');
  all.push('Algorithm/NextPermutation.js');
  all.push('Algorithm/NextState.js');
  all.push('Algorithm/NthElement.js');
  all.push('Algorithm/PartialSort.js');
  all.push('Algorithm/Partition.js');
  all.push('Algorithm/PartitionPoint.js');
+ all.push('Algorithm/PrevCombination.js');
  all.push('Algorithm/PrevPermutation.js');
  all.push('Algorithm/PrevState.js');
  all.push('Algorithm/Reverse.js');
