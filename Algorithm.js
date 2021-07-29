@@ -34,6 +34,7 @@
  all.push('Algorithm/PrevPermutation.js');
  all.push('Algorithm/PrevState.js');
  all.push('Algorithm/Reverse.js');
+ all.push('Algorithm/Rotate.js');
  all.push('Algorithm/SetDifference.js');
  all.push('Algorithm/SetIntersection.js');
  all.push('Algorithm/SetSymmetricDifference.js');
