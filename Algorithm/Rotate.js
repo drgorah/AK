@@ -18,10 +18,11 @@
 
   ak.rotate = function(a, mid, start, end) {
    mid = ak.arrayIndex(a, mid, 'ak.rotate');
-   start = ak.arrayIndex(a, start, 'ak.rotate');
-   end = ak.arrayIndex(a, end, 'ak.rotate');
 
    if(ak.nativeType(mid)===ak.UNDEFINED_T) throw new Error('invalid mid in ak.rotate');
+
+   start = ak.arrayIndex(a, start, 'ak.rotate');
+   end = ak.arrayIndex(a, end, 'ak.rotate');
 
    if(ak.nativeType(start)===ak.UNDEFINED_T) start = 0;
    if(ak.nativeType(end)===ak.UNDEFINED_T) end = a.length;
