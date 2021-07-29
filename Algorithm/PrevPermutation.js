@@ -12,15 +12,6 @@
  function define() {
   if(ak.prevPermutation) return;
 
-  function reverse(a, start, end) {
-   var ai;
-   while(start<--end) {
-    ai = a[start];
-    a[start++] = a[end];
-    a[end] = ai;
-   }
-  }
-
   ak.prevPermutation = function(a, compare, start, end) {
    var i, j, k, ai;
 
@@ -44,16 +35,16 @@
      ai = a[i];
      a[i] = a[k];
      a[k] = ai;
-     reverse(a, j, end);
+     ak._unsafeReverse(a, j, end);
      return true;
     }
     if(i===start) {
-     reverse(a, start, end);
+     ak._unsafeReverse(a, start, end);
      return false;
     }
    }
   };
  }
 
- ak.using(['Algorithm/Compare.js', 'Algorithm/ArrayIndex.js'], define);
+ ak.using(['Algorithm/Compare.js', 'Algorithm/ArrayIndex.js', 'Algorithm/Reverse.js'], define);
 })();
