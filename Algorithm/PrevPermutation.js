@@ -29,9 +29,9 @@
 
    while(true) {
     j = i;
-    if(!(compare(a[--i], a[j])<=0)) {
+    if(compare(a[--i], a[j])>0) {
      k = end;
-     while(!(compare(a[i], a[--k])>0));
+     while(compare(a[i], a[--k])<=0);
      ai = a[i];
      a[i] = a[k];
      a[k] = ai;
