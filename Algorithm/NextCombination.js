@@ -23,6 +23,11 @@
 
    prev = mid-1;
    next = mid+1;
+   while(next!==end && !(compare(a[next],a[prev])>=0 && compare(a[next],a[mid])<0)) ++next;
+   if(next!==end) return false;
+
+   prev = mid-1;
+   next = mid+1;
    while(next!==end && compare(a[next], a[mid])>=0 && compare(a[prev], a[mid])<0) {++mid;++next;}
    if(next===end) return true;
    if(compare(a[prev], a[mid])>=0) return false;
