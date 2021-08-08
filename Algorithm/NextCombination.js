@@ -12,31 +12,6 @@
  function define() {
   if(ak.nextCombination) return;
 
-  function isSorted(a, compare, start, end) {
-   while(++start!==end && compare(a[start-1], a[start])<=0);
-   return start===end;
-  }
-
-  function isCombination(a, mid, compare, start, end) {
-   var prev, next;
-   if(!isSorted(a, compare, start, mid)) return false;
-
-   prev = mid-1;
-   next = mid+1;
-   while(next!==end && !(compare(a[next],a[prev])>=0 && compare(a[next],a[mid])<0)) ++next;
-   if(next!==end) return false;
-
-   prev = mid-1;
-   next = mid+1;
-   while(next!==end && compare(a[next], a[mid])>=0 && compare(a[prev], a[mid])<0) {++mid;++next;}
-   if(next===end) return true;
-   if(compare(a[prev], a[mid])>=0) return false;
-
-   ++mid; ++next;
-   while(next!==end && compare(a[next], a[mid])>=0 && compare(a[prev], a[mid])>=0) {++mid;++next;}
-   return next===end;
-  }
-
   function makeCombination(a, mid, compare, start, end) {
    ak._unsafeSort(a, compare, start, mid);
    ak._unsafeSort(a, compare, mid, end);
@@ -57,7 +32,7 @@
    if(mid===end) ak._unsafeSort(a, compare, start, end);
    if(mid<=start || mid>=end) return false;
 
-   if(!isCombination(a, mid, compare, start, end)) makeCombination(a, mid, compare, start, end);
+   if(!ak._unsafeIsCombination(a, mid, compare, start, end)) makeCombination(a, mid, compare, start, end);
    prev = mid-1;
    next = mid;
 
@@ -93,5 +68,5 @@
   };
  }
 
- ak.using(['Algorithm/Compare.js', 'Algorithm/ArrayIndex.js', 'Algorithm/Sort.js', 'Algorithm/UpperBound.js', 'Algorithm/Rotate.js'], define);
+ ak.using(['Algorithm/Compare.js', 'Algorithm/ArrayIndex.js', 'Algorithm/Sort.js', 'Algorithm/UpperBound.js', 'Algorithm/Rotate.js', 'Algorithm/IsCombination.js'], define);
 })();

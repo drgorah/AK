@@ -16,6 +16,7 @@
  all.push('Algorithm/Equal.js');
  all.push('Algorithm/EqualRange.js');
  all.push('Algorithm/Includes.js');
+ all.push('Algorithm/IsCombination.js');
  all.push('Algorithm/IsPartitioned.js');
  all.push('Algorithm/IsSorted.js');
  all.push('Algorithm/IsSortedUntil.js');
