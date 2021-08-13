@@ -39,8 +39,9 @@
    while(next!==end && compare(a[prev], a[next])===0) ++next;
 
    if(next===end || compare(a[prev], a[next])>0) {
+    next = mid;
     pivot = end;
-    while(pivot===end && prev!==start) pivot = minGreater(a, a[--prev], compare, mid, end);
+    while(pivot===end && prev!==start) if(compare(a[--prev], a[--next])!==0) pivot = minGreater(a, a[prev], compare, mid, end);
     if(pivot===end) {
      ak._unsafeRotate(a, mid, start, end);
      return false;
