@@ -29,12 +29,12 @@
 
    prev = mid-1;
    next = mid+1;
-   while(next!==end && compare(a[next], a[mid])>=0 && compare(a[prev], a[mid])<0) {++mid;++next;}
+   while(next!==end && compare(a[next], a[mid])>=0 && compare(a[prev], a[mid])<=0) {++mid;++next;}
    if(next===end) return true;
    if(compare(a[prev], a[mid])>=0) return false;
 
    ++mid; ++next;
-   while(next!==end && compare(a[next], a[mid])>=0 && compare(a[prev], a[mid])>=0) {++mid;++next;}
+   while(next!==end && compare(a[next], a[mid])>=0 && compare(a[prev], a[mid])>0) {++mid;++next;}
    return next===end;
   };
 

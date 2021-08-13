@@ -36,7 +36,9 @@
    prev = mid-1;
    next = mid;
 
-   if(compare(a[prev], a[next])>=0) {
+   while(next!==end && compare(a[prev], a[next])===0) ++next;
+
+   if(next===end || compare(a[prev], a[next])>0) {
     pivot = end;
     while(pivot===end && prev!==start) pivot = minGreater(a, a[--prev], compare, mid, end);
     if(pivot===end) {
