@@ -13,6 +13,7 @@
  all.push('Number/Bignum.js');
  all.push('Number/Expression.js');
  all.push('Number/Fixed.js');
+ all.push('Number/GrayCode.js');
  all.push('Number/Interval.js');
  all.push('Number/NextAfter.js');
  all.push('Number/Rational.js');
