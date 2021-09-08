@@ -22,6 +22,8 @@
  all.push('Copula/IndependentCopula.js');
  all.push('Copula/JoeCopula.js');
  all.push('Copula/LowerCopula.js');
+ all.push('Copula/SampleCopula.js');
+ all.push('Copula/SampleMarginals.js');
  all.push('Copula/UpperCopula.js');
  ak.using(all);
 })();
