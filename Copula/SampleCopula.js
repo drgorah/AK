@@ -16,8 +16,11 @@
    var marginals = ak.sampleMarginals(samples);
    var n = samples.length;
    var m = marginals.length;
+   var f;
 
-   var f = function(u) {
+   samples = samples.slice(0);
+
+   f = function(u) {
     var count = 0;
     var i, j;
 
@@ -36,7 +39,7 @@
     }
     return count/n;
    };
-   f.samples = function() {return samples;};
+   f.samples = function() {return samples.slice(0);};
 
    return Object.freeze(f);
   };
