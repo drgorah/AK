@@ -19,5 +19,6 @@
  all.push('Approx/MonoCubicSplineInterpolate.js');
  all.push('Approx/MultiLinearInterpolate.js');
  all.push('Approx/NevilleInterpolate.js');
+ all.push('Approx/NodeMarginals.js');
  ak.using(all);
 })();
