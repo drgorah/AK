@@ -38,7 +38,7 @@
 
     dims = samples[i].dims();
     if(dims===0) throw new Error('empty sample in ak.sampleMarginals');
-    if(dims!==marginals.length) throw new Error('sample dimnension mismatch in ak.sampleMarginals'); 
+    if(dims!==marginals.length) throw new Error('sample dimension mismatch in ak.sampleMarginals'); 
 
     for(j=0;j<dims;++j) {
      x = samples[i].at(j);
