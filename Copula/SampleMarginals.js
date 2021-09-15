@@ -28,7 +28,9 @@
    marginals = new Array(dims);
    for(j=0;j<dims;++j) {
     marginals[j] = new Array(n);
-    marginals[j][0] = samples[0].at(j);
+    x = samples[0].at(j);
+    if(isNaN(x)) throw new Error('NaN sample element in ak.sampleMarginals');
+    marginals[j][0] = x;
    }
 
    for(i=1;i<n;++i) {
