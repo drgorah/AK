@@ -10,6 +10,7 @@
 
 (function() {
  var all = [];
+ all.push('Approx/AdditiveModel.js');
  all.push('Approx/BasisFunctionInterpolate.js');
  all.push('Approx/CubicSplineInterpolate.js');
  all.push('Approx/KernelSmooth.js');
