@@ -11,6 +11,7 @@
 (function() {
  var all = [];
  all.push('Number/Bignum.js');
+ all.push('Number/Dimensional.js');
  all.push('Number/Expression.js');
  all.push('Number/Fixed.js');
  all.push('Number/GrayCode.js');
