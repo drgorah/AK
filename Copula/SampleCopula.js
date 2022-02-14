@@ -28,7 +28,7 @@
     u = u.toArray();
 
     for(j=0;j<m;++j) {
-     if(!(u[j]>=0)) return 0;
+     if(!(u[j]>0)) return 0;
      i = ak.floor(u[j]*n);
      u[j] = i<n ? marginals[j][i] : marginals[j][n-1];
     }
