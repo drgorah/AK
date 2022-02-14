@@ -30,7 +30,7 @@
     for(j=0;j<m;++j) {
      if(!(u[j]>0)) return 0;
      i = ak.floor(u[j]*n);
-     u[j] = i<n ? marginals[j][i] : marginals[j][n-1];
+     u[j] = i<n ? marginals[j].at(i) : marginals[j].at(n-1);
     }
 
     for(i=0;i<n;++i) {
@@ -45,15 +45,16 @@
   };
 
   ak.sampleCopulaRnd = function(samples, rnd) {
-   var marginals, n, m, f;
+   var marginals, n, m, i, f;
 
    if(ak.nativeType(rnd)===ak.UNDEFINED_T) rnd = Math.random;
    else if(ak.nativeType(rnd)!==ak.FUNCTION_T) throw new Error('invalid rnd in ak.sampleCopulaRnd');
 
-   marginals = ak.sampleMarginals(samples);
+   marginals = ak.sampleMarginals(samples).slice(0);
    samples = samples.slice(0);
    n = samples.length;
    m = marginals.length;
+   for(i=0;i<m;++i) marginals[i] = marginals[i].toArray();
 
    f = function() {
     var u = samples[ak.floor(rnd()*n)].toArray();

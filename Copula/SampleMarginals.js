@@ -46,9 +46,12 @@
      marginals[j][i] = x;
     }
    }
-   for(j=0;j<dims;++j) marginals[j].sort(ak.numberCompare);
+   for(j=0;j<dims;++j) {
+    marginals[j].sort(ak.numberCompare);
+    marginals[j] = ak.vector(marginals[j]);
+   }
 
-   return marginals;
+   return Object.freeze(marginals);
   };
  }
 
