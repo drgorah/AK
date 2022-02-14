@@ -13,44 +13,31 @@
   if(ak.sampleMarginals) return;
 
   ak.sampleMarginals = function(samples) {
-   var n, dims, marginals, i, j, x;
+   var n, dims, marginal, marginals, i, j, x;
 
    if(ak.nativeType(samples)!==ak.ARRAY_T) throw new Error('invalid samples in ak.sampleMarginals');
-
    n = samples.length;
    if(n===0) throw new Error('empty samples in ak.sampleMarginals');
 
    if(ak.type(samples[0])!==ak.VECTOR_T) throw new Error('invalid sample in ak.sampleMarginals');
-
    dims = samples[0].dims();
    if(dims===0) throw new Error('empty sample in ak.sampleMarginals');
-
-   marginals = new Array(dims);
-   for(j=0;j<dims;++j) {
-    marginals[j] = new Array(n);
-    x = samples[0].at(j);
-    if(isNaN(x)) throw new Error('NaN sample element in ak.sampleMarginals');
-    marginals[j][0] = x;
-   }
-
    for(i=1;i<n;++i) {
-    if(ak.type(samples[i])!==ak.VECTOR_T) throw new Error('invalid sample in ak.sampleMarginals'); 
+    if(ak.type(samples[i])!==ak.VECTOR_T) throw new Error('invalid sample in ak.sampleMarginals');
+    if(samples[i].dims()!==dims) throw new Error('sample dimension mismatch in ak.sampleMarginals'); 
+   }
 
-    dims = samples[i].dims();
-    if(dims===0) throw new Error('empty sample in ak.sampleMarginals');
-    if(dims!==marginals.length) throw new Error('sample dimension mismatch in ak.sampleMarginals'); 
-
-    for(j=0;j<dims;++j) {
-     x = samples[i].at(j);
+   marginal = new Array(n);
+   marginals = new Array(dims);
+   for(i=0;i<dims;++i) {
+    for(j=0;j<n;++j) {
+     x = samples[j].at(i);
      if(isNaN(x)) throw new Error('NaN sample element in ak.sampleMarginals');
-     marginals[j][i] = x;
+     marginal[j]= x;
     }
+    marginal.sort(ak.numberCompare);
+    marginals[i] = ak.vector(marginal);
    }
-   for(j=0;j<dims;++j) {
-    marginals[j].sort(ak.numberCompare);
-    marginals[j] = ak.vector(marginals[j]);
-   }
-
    return Object.freeze(marginals);
   };
  }
