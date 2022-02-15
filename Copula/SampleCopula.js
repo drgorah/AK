@@ -45,21 +45,19 @@
   };
 
   ak.sampleCopulaRnd = function(samples, rnd) {
-   var marginals, n, m, i, f;
+   var marginals, n, m, i, j, f;
 
    if(ak.nativeType(rnd)===ak.UNDEFINED_T) rnd = Math.random;
    else if(ak.nativeType(rnd)!==ak.FUNCTION_T) throw new Error('invalid rnd in ak.sampleCopulaRnd');
 
-   marginals = ak.sampleMarginals(samples).slice(0);
    samples = samples.slice(0);
+   marginals = ak.sampleMarginals(samples).slice(0);
    n = samples.length;
    m = marginals.length;
-   for(i=0;i<m;++i) marginals[i] = marginals[i].toArray();
+   for(j=0;j<m;++j) marginals[j] = marginals[j].toArray();
 
    f = function() {
     var u = samples[ak.floor(rnd()*n)].toArray();
-    var j;
-
     for(j=0;j<m;++j) u[j] = ak._unsafeUpperBound(marginals[j], u[j], ak.numberCompare, 0, n) / n;
     return ak.vector(u);
    };
@@ -67,6 +65,23 @@
    f.rnd = function() {return rnd;};
 
    return Object.freeze(f);
+  };
+
+  ak.sampleCopulaMap = function(samples) {
+   var marginals, sample, n, m, i, j;
+
+   samples = samples.slice(0);
+   marginals = ak.sampleMarginals(samples).slice(0);
+   n = samples.length;
+   m = marginals.length;
+   for(j=0;j<m;++j) marginals[j] = marginals[j].toArray();
+
+   for(i=0;i<n;++i) {
+    sample = samples[i].toArray();
+    for(j=0;j<m;++j) sample[j] = ak._unsafeUpperBound(marginals[j], sample[j], ak.numberCompare, 0, n) / n;
+    samples[i] = ak.vector(sample);
+   }
+   return Object.freeze(samples);
   };
  }
 
