@@ -185,7 +185,7 @@
    f = function(x) {
     var i, y;
 
-    if(ak.type(x)!==ak.VECTOR_T || x.dims()!==dims) throw new Error('invalid argument in ak.additiveMode');
+    if(ak.type(x)!==ak.VECTOR_T || x.dims()!==dims) throw new Error('invalid argument in ak.additiveModel');
 
     y = mean;
     for(i=0;i<dims;++i) y += smoothers[i](x.at(i));
