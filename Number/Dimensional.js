@@ -136,9 +136,16 @@
 
      if(l<r) return -1;
      if(l>r) return  1;
-     throw new Error('duplicate dimension in ak.dimensional');
+     return 0;
     }
    );
+
+   for(i=1;i<ni;++i) {
+    if(dimensions[i].unit===dimensions[i-1].unit) {
+     dimensions[i] = ak.dimension(dimensions[i].unit, dimensions[i].power+dimensions[i-1].power);
+     dimensions[i-1] = ak.dimension(dimensions[i].unit, 0);
+    }
+   }
 
    nj = 0;
    for(i=0;i<ni;++i) if(dimensions[i].power!==0) ++nj;
