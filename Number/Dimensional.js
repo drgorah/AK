@@ -312,10 +312,7 @@
   ak.dimensionalDiff = function(x, y) {
    if(ak.type(x)!==ak.DIMENSIONAL_T || ak.type(y)!==ak.DIMENSIONAL_T) throw new Error('non-dimensional argument in ak.dimensionalDiff');
    if(!eqDimensions(x, y)) throw new Error('incompatible dimensionals in ak.dimensionalDiff');
-
-   x = x.value();
-   y = y.value();
-   return Math.abs(x - y)/(1 + Math.min(Math.abs(x), Math.abs(y)));
+   return ak.diff(x.value(), y.value());
   };
 
   ak.overload(ak.abs,  ak.DIMENSIONAL_T, abs);
