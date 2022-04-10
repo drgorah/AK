@@ -175,13 +175,12 @@
   }
 
   function inv(x) {
-   var invDims = getDimensions(x);
-   var n = invDims.length;
+   var dims = getDimensions(x);
+   var n = dims.length;
    var i;
 
-   for (i=0;i<n;++i) invDims[i] = ak.dimension(invDims[i].unit, -invDims[i].power);
-
-   return ak.dimensional(1/x.value(), invDims);
+   for (i=0;i<n;++i) dims[i] = ak.dimension(dims[i].unit, -dims[i].power);
+   return ak.dimensional(1/x.value(), dims);
   }
 
   function neg(x) {
@@ -189,13 +188,12 @@
   }
 
   function sqrt(x) {
-   var sqrtDims = getDimensions(x);
-   var n = sqrtDims.length;
+   var dims = getDimensions(x);
+   var n = dims.length;
    var i;
 
-   for (i=0;i<n;++i) sqrtDims[i] = ak.dimension(sqrtDims[i].unit, sqrtDims[i].power/2);
-
-   return ak.dimensional(Math.sqrt(x.value()), sqrtDims);
+   for (i=0;i<n;++i) dims[i] = ak.dimension(dims[i].unit, dims[i].power/2);
+   return ak.dimensional(Math.sqrt(x.value()), dims);
   }
 
   function eqDimensions(x, y) {
@@ -229,32 +227,15 @@
   }
 
   function div(x, y) {
-   var divDims = getDimensions(x);
-   var nx = divDims.length;
-   var ny = y.dimensions();
-   var i = 0;
-   var j = 0;
+   var dims = getDimensions(x);
+   var n = y.dimensions();
+   var i, dim;
 
-   while(i<nx && j<ny) {
-    if(y.dimension(j).unit<divDims[i].unit) {
-     divDims.push(ak.dimension(y.dimension(j).unit, -y.dimension(j).power));
-     ++j;
-    }
-    else if(y.dimension(j).unit>divDims[i].unit) {
-     ++i;
-    }
-    else {
-     divDims[i] = ak.dimension(divDims[i].unit, divDims[i].power-y.dimension(j).power);
-     ++i;
-     ++j;
-    }
+   for(i=0;i<n;++i) {
+    dim = y.dimension(i);
+    dims.push(ak.dimension(dim.unit, -dim.power));
    }
-   while(j<ny) {
-    divDims.push(ak.dimension(y.dimension(j).unit, -y.dimension(j).power));
-    ++j;
-   }
-
-   return ak.dimensional(x.value()/y.value(), divDims);
+   return ak.dimensional(x.value()/y.value(), dims);
   }
 
   function lNumDiv(x, y) {
@@ -262,12 +243,12 @@
   }
 
   function rNumDiv(x, y) {
-   var divDims = getDimensions(y);
-   var n = divDims.length;
+   var dims = getDimensions(y);
+   var n = dims.length;
    var i;
 
-   for(i=0;i<n;++i) divDims[i] = ak.dimension(divDims[i].unit, -divDims[i].power);
-   return ak.dimensional(x/y.value(), divDims);
+   for(i=0;i<n;++i) dims[i] = ak.dimension(dims[i].unit, -dims[i].power);
+   return ak.dimensional(x/y.value(), dims);
   }
 
   function eq(x, y) {
@@ -299,29 +280,7 @@
   }
 
   function mul(x, y) {
-   var mulDims = getDimensions(x);
-   var nx = mulDims.length;
-   var ny = y.dimensions();
-   var i = 0;
-   var j = 0;
-
-   while(i<nx && j<ny) {
-    if(y.dimension(j).unit<mulDims[i].unit) {
-     mulDims.push(y.dimension(j));
-     ++j;
-    }
-    else if(y.dimension(j).unit>mulDims[i].unit) {
-     ++i;
-    }
-    else {
-     mulDims[i] = ak.dimension(mulDims[i].unit, mulDims[i].power+y.dimension(j).power);
-     ++i;
-     ++j;
-    }
-   }
-   while(j<ny) mulDims.push(y.dimension(j++));
-
-   return ak.dimensional(x.value()*y.value(), mulDims);
+   return ak.dimensional(x.value()*y.value(), getDimensions(x).concat(getDimensions(y)));
   }
 
   function lNumMul(x, y) {
@@ -337,13 +296,12 @@
   }
 
   function pow(x, y) {
-   var powDims = getDimensions(x);
-   var n = powDims.length;
+   var dims = getDimensions(x);
+   var n = dims.length;
    var i;
 
-   for (i=0;i<n;++i) powDims[i] = ak.dimension(powDims[i].unit, powDims[i].power*y);
-
-   return ak.dimensional(Math.pow(x.value(), y), powDims);
+   for (i=0;i<n;++i) dims[i] = ak.dimension(dims[i].unit, dims[i].power*y);
+   return ak.dimensional(Math.pow(x.value(), y), dims);
   }
 
   function sub(x, y) {
